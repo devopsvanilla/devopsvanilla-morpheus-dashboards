@@ -3,6 +3,7 @@ package com.morpheusdata.dashboard
 import com.morpheusdata.core.Plugin
 import com.morpheusdata.dashboard.clouds.*
 import com.morpheusdata.dashboard.clusters.*
+import com.morpheusdata.dashboard.custom.*
 import com.morpheusdata.model.Permission
 import groovy.util.logging.Slf4j
 
@@ -78,6 +79,9 @@ class MorpheusHomeDashboardPlugin extends Plugin {
 			this.pluginProviders.put(environmentCountProvider.code, environmentCountProvider)
 			CurrentHealthItemProvider currentHealthProvider = new CurrentHealthItemProvider(this, morpheus)
 			this.pluginProviders.put(currentHealthProvider.code, currentHealthProvider)
+			//custom widgets
+			CustomWidgetItemProvider customWidgetProvider = new CustomWidgetItemProvider(this, morpheus)
+			this.pluginProviders.put(customWidgetProvider.code, customWidgetProvider)
 			//add the main dashboard
 			HomeDashboardProvider homeDashboardProvider = new HomeDashboardProvider(this, morpheus)
 			this.pluginProviders.put(homeDashboardProvider.code, homeDashboardProvider)
