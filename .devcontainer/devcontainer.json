@@ -1,0 +1,131 @@
+{
+  "name": "Morpheus Plugin Development",
+  "image": "mcr.microsoft.com/devcontainers/java:17",
+
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "17",
+      "installGradle": true,
+      "gradleVersion": "7.6"
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "18",
+      "nodeGypDependencies": true
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "latest"
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // Groovy Support
+        "marlon407.code-groovy",
+        "nicolasvuillamy.vscode-groovy-lint",
+
+        // Java Support
+        "vscjava.vscode-java-pack",
+        "vscjava.vscode-gradle",
+        "redhat.java",
+        "vscjava.vscode-java-dependency",
+        "vscjava.vscode-java-test",
+        "vscjava.vscode-maven",
+
+        // Code Quality
+        "sonarsource.sonarlint-vscode",
+        "streetsidesoftware.code-spell-checker",
+
+        // Formatters
+        "esbenp.prettier-vscode",
+        "editorconfig.editorconfig",
+
+        // GitHub & Git Integration
+        "github.copilot",
+        "github.copilot-chat",
+        "github.vscode-pull-request-github",
+        "github.vscode-github-actions",
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+        "donjayamanne.githistory",
+
+        // General Productivity
+        "ms-vscode.vscode-typescript-next",
+        "dbaeumer.vscode-eslint",
+        "christian-kohler.path-intellisense",
+        "visualstudioexptteam.vscodeintellicode",
+
+        // Documentation
+        "yzhang.markdown-all-in-one",
+        "bierner.markdown-mermaid"
+      ],
+
+      "settings": {
+        // Java Settings
+        "java.configuration.runtimes": [
+          {
+            "name": "JavaSE-11",
+            "path": "/usr/local/sdkman/candidates/java/11.0.21-tem"
+          },
+          {
+            "name": "JavaSE-17",
+            "path": "/usr/local/sdkman/candidates/java/17.0.9-tem",
+            "default": true
+          }
+        ],
+        "java.compile.nullAnalysis.mode": "automatic",
+        "java.configuration.updateBuildConfiguration": "automatic",
+
+        // Gradle Settings
+        "gradle.nestedProjects": true,
+        "java.import.gradle.home": "/usr/local/sdkman/candidates/gradle/current",
+
+        // Groovy Settings
+        "groovy.classpath": [
+          "${workspaceFolder}/build/classes",
+          "${workspaceFolder}/morpheus-home-dashboard-plugin/build/classes"
+        ],
+
+        // Editor Settings
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": "explicit"
+        },
+        "editor.tabSize": 4,
+        "editor.insertSpaces": false,
+
+        // File Associations
+        "files.associations": {
+          "*.gradle": "groovy",
+          "gradlew": "shellscript"
+        },
+
+        // Terminal
+        "terminal.integrated.defaultProfile.linux": "bash",
+
+        // Git
+        "git.autofetch": true,
+        "git.enableSmartCommit": true
+      }
+    }
+  },
+
+  "postCreateCommand": "chmod +x gradlew && ./gradlew --version",
+
+  "remoteUser": "vscode",
+
+  "mounts": [
+    "source=${localEnv:HOME}/.gradle,target=/home/vscode/.gradle,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.m2,target=/home/vscode/.m2,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.config/gh,target=/home/vscode/.config/gh,type=bind,consistency=cached"
+  ],
+
+  "forwardPorts": [8080, 3000],
+
+  "postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}"
+}
