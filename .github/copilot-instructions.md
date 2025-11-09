@@ -1,13 +1,26 @@
-# Morpheus Dashboard Plugin Development Instructions
+# Morpheus Dashboard Plugin Development Guide
 
-## Project Overview
+## Project Context
 
-This workspace contains Morpheus plugins for custom dashboards using Groovy/Java backend and React/JSX frontend components.
+This workspace develops **Morpheus Dashboard Plugins** for the MorpheusData Appliance UI using:
+- **Backend**: Groovy (Java 17+) with Gradle
+- **Frontend**: React/JSX components with C3.js charts
+- **Build**: Gradle 7.3+ with Shadow JAR plugin
+- **Plugin Architecture**: Extends Morpheus Plugin Core API
 
-**Architecture:**
-- Backend: Groovy with Gradle build system
-- Frontend: React/JSX components
-- Plugin system: Extends `AbstractDashboardProvider` and `AbstractDashboardItemTypeProvider`
+## Project Structure
+
+```
+morpheus-home-dashboard-plugin/
+├── src/main/groovy/com/morpheusdata/dashboard/     # Dashboard providers
+│   ├── [feature]/                                   # Feature-specific providers
+│   ├── HomeDashboardProvider.groovy                 # Main dashboard provider
+│   └── MorpheusHomeDashboardPlugin.groovy          # Plugin entry point
+├── src/assets/js/                                   # React widget components
+│   └── [feature]/                                   # Feature-specific widgets
+└── src/main/resources/renderer/hbs/                 # Handlebars templates
+    └── [feature]/                                   # Widget container templates
+```
 
 ## Code Patterns
 
