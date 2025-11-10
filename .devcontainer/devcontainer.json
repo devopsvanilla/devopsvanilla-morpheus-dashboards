@@ -11,7 +11,7 @@
       "version": "latest"
     },
     "ghcr.io/devcontainers/features/node:1": {
-      "version": "18",
+      "version": "20",
       "nodeGypDependencies": true
     },
     "ghcr.io/devcontainers/features/github-cli:1": {
@@ -53,12 +53,8 @@
         // Java Settings
         "java.configuration.runtimes": [
           {
-            "name": "JavaSE-11",
-            "path": "/usr/local/sdkman/candidates/java/11.0.21-tem"
-          },
-          {
             "name": "JavaSE-17",
-            "path": "/usr/local/sdkman/candidates/java/17.0.9-tem",
+            "path": "/usr/local/sdkman/candidates/java/17.0.17-ms",
             "default": true
           }
         ],
@@ -99,16 +95,18 @@
       }
     }
   },
-  "initializeCommand": "bash -lc 'mkdir -p ${localEnv:HOME}/.ssh ${localEnv:HOME}/.config/gh && [ -f ${localEnv:HOME}/.gitconfig ] || touch ${localEnv:HOME}/.gitconfig'",
+  "initializeCommand": "bash -lc 'mkdir -p ${localEnv:HOME}/.ssh ${localEnv:HOME}/.config/gh'",
   "postCreateCommand": "bash -c 'sudo chown -R vscode:vscode /home/vscode/.gradle /home/vscode/.m2 && chmod +x gradlew && ./gradlew --version && git config --global --add safe.directory ${containerWorkspaceFolder}'",
+  "postStartCommand": "bash -c '[ -f /tmp/.host-gitconfig ] && cp /tmp/.host-gitconfig ~/.gitconfig || true'",
   "remoteUser": "vscode",
   "mounts": [
     // Named volumes for build caches - best performance and reliability
     "source=vscode-gradle,target=/home/vscode/.gradle,type=volume",
     "source=vscode-m2,target=/home/vscode/.m2,type=volume",
-    // Inherit WSL host auth and config (Git, SSH, GitHub CLI)
-    "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
+    // Copy Git config to temp location (will be copied to home in postStartCommand)
+    "source=${localEnv:HOME}/.gitconfig,target=/tmp/.host-gitconfig,type=bind,consistency=cached,readonly",
+    // Inherit WSL host auth (SSH, GitHub CLI)
+    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached,readonly",
     "source=${localEnv:HOME}/.config/gh,target=/home/vscode/.config/gh,type=bind,consistency=cached"
   ],
   "forwardPorts": [
