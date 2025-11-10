@@ -72,7 +72,8 @@ class HomeDashboardProvider extends AbstractDashboardProvider {
 			],
 			main:[
 				'dashboard-item-user-favorites', 
-				'dashboard-item-current-alarms'
+				'dashboard-item-current-alarms',
+								'dashboard-item-custom-widget',
 			],
 			instances:[
 				'dashboard-item-instance-count', 
