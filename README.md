@@ -1,40 +1,151 @@
 # Morpheus Dashboard Plugins
 
-This project contains plugins for custom dashboards in the MorpheusData Appliance UI.
+## Overview
 
-### Building
+This project provides a comprehensive collection of **custom dashboard plugins** for the **MorpheusData Appliance UI**. It enables DevOps and infrastructure teams to extend Morpheus with tailored dashboards that display real-time infrastructure metrics, custom widgets, and organization-specific visualizations.
 
-This is a Morpheus plugin that leverages the `morpheus-plugin-core` which can be referenced by visiting [https://developer.morpheusdata.com](https://developer.morpheusdata.com). It is a groovy plugin designed to be uploaded into a Morpheus environment via the `Administration -> Integrations -> Plugins` section. To build all projects in this repo from scratch simply run the shadowJar gradle task on java 17:
+### Key Features
 
-```bash
-gradlew shadowJar
+- **Custom Dashboards**: Build personalized dashboards tailored to your organization's needs
+- **Standard Dashboards**: Pre-built dashboard templates for common infrastructure monitoring scenarios
+- **Groovy-based Plugins**: Leverage Morpheus plugin core for full API integration
+- **Easy Deployment**: Upload plugins directly through the Morpheus administration panel
+- **Home Dashboard Plugin**: Specialized plugin for customizing the Morpheus home dashboard experience
+
+### Technology Stack
+
+- **Language**: Groovy (with Java support)
+- **Build Tool**: Gradle
+- **Target Platform**: MorpheusData Appliance v8.0+
+- **Framework**: Morpheus Plugin Core
+
+---
+
+## Project Structure
+
+```
+devopsvanilla-morpheus-dashboards/
+├── morpheus-home-dashboard-plugin/    # Main home dashboard plugin
+├── docs/                               # Documentation and guides
+├── .devcontainer/                      # Development container configuration
+├── gradle/                             # Gradle wrapper and configuration
+└── build.gradle                        # Root build configuration
 ```
 
-A jar will be produced in the `build/lib` folder that can be uploaded into a Morpheus environment.
+---
 
-To build individual projects use a scoped build command:
+## Getting Started
+
+### Prerequisites
+
+- Java 17 or higher
+- Gradle 7.3+
+- MorpheusData Appliance v8.0 or later
+- Git
+
+### Building the Project
+
+#### Build All Plugins
+
+To build all plugins in the repository:
 
 ```bash
-gradlew <project-name>:shadowJar
+./gradlew shadowJarCopy
 ```
 
-For example, to build the `morpheus-home-dashboard` plugin:
+This creates compiled JAR files in the `build/lib` folder.
+
+#### Build Individual Plugins
+
+To build a specific plugin (e.g., `morpheus-home-dashboard`):
 
 ```bash
-gradlew morpheus-home-dashboard:shadowJar
+./gradlew morpheus-home-dashboard-plugin:shadowJarCopy
 ```
 
+#### Output
 
-# Morpheus Standard Dashboards
+After building, a JAR file will be produced in the `build/lib` folder that can be uploaded into your Morpheus environment.
 
-This plugin provides a set of standard dashboards for the Morpheus UI.
+---
 
-## Installing
+## Installation & Configuration
 
-First check to make sure the version of Morpheus installed is above or equal to the minimum required version of this plugin and then download the plugin file above.
-Once the file is downloaded, browse to the Administration -> Integrations -> Plugins section of the Morpheus appliance. Click the Upload File button to select your plugin and upload it.
-The plugin should now be loaded into the environment for use.
+### Installation Steps
 
-## Configuring
+1. **Verify Morpheus Version**: Ensure your Morpheus instance is at or above the minimum required version for these plugins.
 
-There are no configurations for this plugin. Once the plugin is loaded in the environment, the standard dashboards will be available in the Morpheus UI.
+2. **Download the Plugin**: Download the JAR file from the `build/lib` folder (or pre-built releases).
+
+3. **Upload to Morpheus**:
+   - Navigate to **Administration** → **Integrations** → **Plugins**
+   - Click the **Upload File** button
+   - Select your JAR file and upload
+   - The plugin will be loaded into your Morpheus environment
+
+### Configuration
+
+**Standard Dashboards**: Once installed, standard dashboards are automatically available in the Morpheus UI with no additional configuration required.
+
+**Home Dashboard**: The home dashboard can be customized through the Morpheus dashboard settings to display your preferred widgets and metrics.
+
+---
+
+## Available Plugins
+
+### Morpheus Home Dashboard Plugin
+
+The primary plugin in this repository provides enhanced customization capabilities for the Morpheus home dashboard.
+
+**Features**:
+- Custom widget support
+- Real-time data refresh
+- Configurable layout and appearance
+- Integration with Morpheus API for live metrics
+
+**Location**: `./morpheus-home-dashboard-plugin`
+
+---
+
+## Development
+
+### Development Environment
+
+This project includes DevContainer support for consistent development environments:
+
+```bash
+# Build in debug mode (requires DevContainer)
+./debug-build.sh
+```
+
+### Project Dependencies
+
+- **morpheus-plugin-core**: Core Morpheus plugin SDK
+  - Reference: https://developer.morpheusdata.com
+  - Documentation: https://developer.morpheusdata.com/docs
+  - API Reference: https://apidocs.morpheusdata.com
+
+### Code Style
+
+The project uses `.editorconfig` for consistent code formatting across IDEs.
+
+---
+
+## Resources
+
+- [Morpheus Developer Zone](https://developer.morpheusdata.com/)
+- [Morpheus Plugin API Documentation](https://developer.morpheusdata.com/api/index.html)
+- [Morpheus API Reference](https://apidocs.morpheusdata.com/)
+- [HPE Morpheus Enterprise Software Documentation](https://support.hpe.com/)
+
+---
+
+## Support & Contributing
+
+For issues, feature requests, or contributions, please open an issue or pull request on this repository.
+
+---
+
+## License
+
+This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.
