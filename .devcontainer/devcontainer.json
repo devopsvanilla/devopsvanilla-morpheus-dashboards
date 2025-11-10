@@ -50,15 +50,11 @@
         "maciejdems.add-to-gitignore"
       ],
       "settings": {
-        // Java Settings
+        // Java Settings - paths corretos para a imagem base
         "java.configuration.runtimes": [
           {
-            "name": "JavaSE-11",
-            "path": "/usr/local/sdkman/candidates/java/11.0.21-tem"
-          },
-          {
             "name": "JavaSE-17",
-            "path": "/usr/local/sdkman/candidates/java/17.0.9-tem",
+            "path": "/usr/local/sdkman/candidates/java/current",
             "default": true
           }
         ],
@@ -100,7 +96,7 @@
     }
   },
   "initializeCommand": "bash -lc 'mkdir -p ${localEnv:HOME}/.ssh ${localEnv:HOME}/.config/gh && [ -f ${localEnv:HOME}/.gitconfig ] || touch ${localEnv:HOME}/.gitconfig'",
-  "postCreateCommand": "bash -c 'sudo chown -R vscode:vscode /home/vscode/.gradle /home/vscode/.m2 && chmod +x gradlew && ./gradlew --version && git config --global --add safe.directory ${containerWorkspaceFolder}'",
+  "postCreateCommand": "bash -c 'sudo chown -R vscode:vscode /home/vscode/.gradle /home/vscode/.m2 && chmod +x gradlew && ./gradlew --version'",
   "remoteUser": "vscode",
   "mounts": [
     // Named volumes for build caches - best performance and reliability
