@@ -20,9 +20,11 @@ class CloudCountTypeWidget extends React.Component {
     this.setData = this.setData.bind(this);
     this.loadData = this.loadData.bind(this);
     this.refreshData = this.refreshData.bind(this);
+    console.log('[CloudCountTypeWidget] Constructor completed, initial state:', this.state);
   }
 
   componentDidMount() {
+    console.log('[CloudCountTypeWidget] componentDidMount called');
     //load the data
     this.loadData();
     //auto refresh
@@ -30,10 +32,12 @@ class CloudCountTypeWidget extends React.Component {
     //search selector?
     if(this.props.searchSelector)
       $(document).on('morpheus:list.search' + this.props.searchSelector, this.loadData);
+    console.log('[CloudCountTypeWidget] componentDidMount completed');
   }
 
   //data methods
   refreshData() {
+    console.log('[CloudCountTypeWidget] refreshData called');
     if(this.state.autoRefresh == true)
       this.loadData();
   }
@@ -49,6 +53,7 @@ class CloudCountTypeWidget extends React.Component {
   }
 
   setData(results) {
+    console.log('[CloudCountTypeWidget] setData called with results:', results);
     //set it
     var newState = {};
     newState.data = {};
@@ -68,6 +73,8 @@ class CloudCountTypeWidget extends React.Component {
     newState.error = false;
     newState.errorMessage = null;
     //update the state
+    console.log('[CloudCountTypeWidget] setData updating state:', newState);
+
     this.setState(newState);
   }
 
@@ -90,6 +97,7 @@ class CloudCountTypeWidget extends React.Component {
   }
 
   render() {
+    console.log('[CloudCountTypeWidget] render called, current state:', this.state);
     //setup
     //render
     return(

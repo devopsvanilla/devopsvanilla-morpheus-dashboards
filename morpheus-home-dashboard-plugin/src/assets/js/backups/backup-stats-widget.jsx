@@ -6,6 +6,7 @@ class BackupStatsWidget extends React.Component {
 
 	constructor(props) {
     super(props);
+    console.log('[BackupStatsWidget] Constructor called with props:', props);
     //set state
     this.state = {
       loaded: false,
@@ -20,20 +21,25 @@ class BackupStatsWidget extends React.Component {
     this.setData = this.setData.bind(this);
     this.refreshData = this.refreshData.bind(this);
     this.onPillChange = this.onPillChange.bind(this);
+    console.log('[BackupStatsWidget] Constructor completed, initial state:', this.state);
   }
 
   componentDidMount() {
+    console.log('[BackupStatsWidget] componentDidMount called');
     this.loadData();
     $(document).on('morpheus:refresh', this.refreshData);
+    console.log('[BackupStatsWidget] componentDidMount completed, auto-refresh listener attached');
   }
 
   //data methods
   refreshData() {
+    console.log('[BackupStatsWidget] refreshData called, autoRefresh:', this.state.autoRefresh);
     if(this.state.autoRefresh == true)
       this.loadData();
   }
 
   onPillChange(value) {
+    console.log('[BackupStatsWidget] onPillChange called with value:', value, 'current days:', this.state.days);
     if(this.state.days != value) {
       var newState = {};
       newState.days = value;
@@ -42,6 +48,7 @@ class BackupStatsWidget extends React.Component {
   }
 
   loadData() {
+    console.log('[BackupStatsWidget] loadData called, days:', this.state.days);
     //call api for data...
     var apiQuery = 'group(lastResult.status:count(id)) lastResult.status != null';
     var apiOptions = {};
@@ -52,11 +59,13 @@ class BackupStatsWidget extends React.Component {
       startDate.setDate(startDate.getDate() - dayCounter);
     startDate.setHours(0, 0, 0, 0);
     apiQuery = apiQuery + ' and lastResult.startDate > ' + startDate.toISOString();
+    console.log('[BackupStatsWidget] Calling Morpheus.api.backups.search with query:', apiQuery);
     //execute it
     Morpheus.api.backups.search(apiQuery, apiOptions).then(this.setData);
   }
 
   setData(results) {
+    console.log('[BackupStatsWidget] setData called with results:', results);
     //set it
     var newState = {};
     newState.data = {};
@@ -99,11 +108,13 @@ class BackupStatsWidget extends React.Component {
     newState.date = Date.now();
     newState.error = false;
     newState.errorMessage = null;
+    console.log('[BackupStatsWidget] setData updating state:', newState);
     //update the state
     this.setState(newState);
   }
 
   render() {
+    console.log('[BackupStatsWidget] render called, current state:', this.state);
     //setup
     var pillList = [
       {name:$L({code:'gomorpheus.time.oneDay'}), value:1},
@@ -112,6 +123,7 @@ class BackupStatsWidget extends React.Component {
     ];
     //data
     var chartData = this.state.loaded == true && this.state.data ? this.state.data.chartData : {};
+    console.log('[BackupStatsWidget] render - chartData:', chartData);
     //render
     return (
       <Widget>

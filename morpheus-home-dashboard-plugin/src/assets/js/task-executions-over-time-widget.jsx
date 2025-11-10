@@ -6,6 +6,7 @@ class TaskExecutionsDayWidget extends React.Component {
   
   constructor(props) {
     super(props);
+    console.log('[TaskExecutionsDayWidget] Constructor called with props:', props);
     //set state
     this.state = {
       loaded: false,
@@ -22,23 +23,28 @@ class TaskExecutionsDayWidget extends React.Component {
     this.setData = this.setData.bind(this);
     this.refreshData = this.refreshData.bind(this);
     this.onPillChange = this.onPillChange.bind(this);
+    console.log('[TaskExecutionsDayWidget] Constructor completed, initial state:', this.state);
   }
 
   componentDidMount() {
+    console.log('[TaskExecutionsDayWidget] componentDidMount called');
     this.timeFormat = d3.timeFormat('%-m/%d');
     //load the data
     this.loadData();
     //configure auto refresh
     $(document).on('morpheus:refresh', this.refreshData);
+    console.log('[TaskExecutionsDayWidget] componentDidMount completed');
   }
 
   //data methods
   refreshData() {
+    console.log('[TaskExecutionsDayWidget] refreshData called');
     if(this.state.autoRefresh == true)
       this.loadData();
   }
 
   loadData() {
+    console.log('[TaskExecutionsDayWidget] loadData called');
     var now = new Date();
     var self = this;
     //call api for data..
@@ -84,6 +90,7 @@ class TaskExecutionsDayWidget extends React.Component {
   }
 
   setData(results) {
+    console.log('[TaskExecutionsDayWidget] setData called with results:', results);
     //data format: [{name:'group by name', values:[ [timestap, value], [] ]}]
     var newState = {};
     newState.data = {};
@@ -125,6 +132,8 @@ class TaskExecutionsDayWidget extends React.Component {
     newState.data.loaded = true
     newState.loaded = true
     //update the state
+    console.log('[TaskExecutionsDayWidget] setData updating state:', newState);
+
     this.setState(newState);
   }
 
@@ -182,6 +191,7 @@ class TaskExecutionsDayWidget extends React.Component {
   }
 
   render() {
+    console.log('[TaskExecutionsDayWidget] render called, current state:', this.state);
     //setup
     var pillList = [
       {name:'3 Days', value:3},

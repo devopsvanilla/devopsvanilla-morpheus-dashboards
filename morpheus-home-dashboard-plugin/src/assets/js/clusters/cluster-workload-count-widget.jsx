@@ -20,9 +20,11 @@ class ClusterWorkloadCountWidget extends React.Component {
     this.loadData = this.loadData.bind(this);
     this.refreshData = this.refreshData.bind(this);
     this.onLegendClick = this.onLegendClick.bind(this);
+    console.log('[ClusterWorkloadCountWidget] Constructor completed, initial state:', this.state);
   }
 
   componentDidMount() {
+    console.log('[ClusterWorkloadCountWidget] componentDidMount called');
     //load the data
     this.loadData();
     //auto refresh
@@ -30,10 +32,12 @@ class ClusterWorkloadCountWidget extends React.Component {
     //search selector?
     if(this.props.searchSelector)
       $(document).on('morpheus:list.search' + this.props.searchSelector, this.loadData);
+    console.log('[ClusterWorkloadCountWidget] componentDidMount completed');
   }
 
   //data methods
   refreshData() {
+    console.log('[ClusterWorkloadCountWidget] refreshData called');
     if(this.state.autoRefresh == true)
       this.loadData();
   }
@@ -50,6 +54,7 @@ class ClusterWorkloadCountWidget extends React.Component {
   }
 
   setData(results) {
+    console.log('[ClusterWorkloadCountWidget] setData called with results:', results);
     //set it
     var newState = {};
     newState.data = {};
@@ -69,6 +74,8 @@ class ClusterWorkloadCountWidget extends React.Component {
     newState.error = false;
     newState.errorMessage = null;
     //update the state
+    console.log('[ClusterWorkloadCountWidget] setData updating state:', newState);
+
     this.setState(newState);
   }
 
@@ -102,6 +109,7 @@ class ClusterWorkloadCountWidget extends React.Component {
   }
 
   render() {
+    console.log('[ClusterWorkloadCountWidget] render called, current state:', this.state);
     //setup
     //render
     return(

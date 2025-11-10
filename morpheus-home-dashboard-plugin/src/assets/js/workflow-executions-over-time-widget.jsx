@@ -6,6 +6,7 @@ class WorkflowExecutionsDayWidget extends React.Component {
   
   constructor(props) {
     super(props);
+    console.log('[WorkflowExecutionsDayWidget] Constructor called with props:', props);
     //set state
     this.state = {
       loaded: false,
@@ -22,23 +23,28 @@ class WorkflowExecutionsDayWidget extends React.Component {
     this.setData = this.setData.bind(this);
     this.refreshData = this.refreshData.bind(this);
     this.onPillChange = this.onPillChange.bind(this);
+    console.log('[WorkflowExecutionsDayWidget] Constructor completed, initial state:', this.state);
   }
 
   componentDidMount() {
+    console.log('[WorkflowExecutionsDayWidget] componentDidMount called');
     this.timeFormat = d3.timeFormat('%-m/%d');
     //load the data
     this.loadData();
     //configure auto refresh
     $(document).on('morpheus:refresh', this.refreshData);
+    console.log('[WorkflowExecutionsDayWidget] componentDidMount completed');
   }
 
   //data methods
   refreshData() {
+    console.log('[WorkflowExecutionsDayWidget] refreshData called');
     if(this.state.autoRefresh == true)
       this.loadData();
   }
 
   loadData() {
+    console.log('[WorkflowExecutionsDayWidget] loadData called');
     var now = new Date();
     var self = this;
     //call api for data..
@@ -84,6 +90,7 @@ class WorkflowExecutionsDayWidget extends React.Component {
   }
 
   setData(results) {
+    console.log('[WorkflowExecutionsDayWidget] setData called with results:', results);
     //data format: [{name:'group by name', values:[ [timestap, value], [] ]}]
     var newState = {};
     newState.data = {};
@@ -125,6 +132,8 @@ class WorkflowExecutionsDayWidget extends React.Component {
     newState.data.loaded = true
     newState.loaded = true
     //update the state
+    console.log('[WorkflowExecutionsDayWidget] setData updating state:', newState);
+
     this.setState(newState);
   }
 
@@ -190,6 +199,7 @@ class WorkflowExecutionsDayWidget extends React.Component {
   }
 
   render() {
+    console.log('[WorkflowExecutionsDayWidget] render called, current state:', this.state);
     //setup
     var pillList = [
       {name:'3 Days', value:3},

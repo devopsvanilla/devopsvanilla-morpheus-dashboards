@@ -6,6 +6,7 @@ class CurrentAlarmsWidget extends React.Component {
   
   constructor(props) {
     super(props);
+    console.log('[CurrentAlarmsWidget] Constructor called with props:', props);
     //set state
     this.state = {
       loaded: false,
@@ -18,20 +19,25 @@ class CurrentAlarmsWidget extends React.Component {
     //bind methods
     this.setData = this.setData.bind(this);
     this.refreshData = this.refreshData.bind(this);
+    console.log('[CurrentAlarmsWidget] Constructor completed, initial state:', this.state);
   }
 
   componentDidMount() {
+    console.log('[CurrentAlarmsWidget] componentDidMount called');
     this.loadData();
     $(document).on('morpheus:refresh', this.refreshData);
+    console.log('[CurrentAlarmsWidget] componentDidMount completed');
   }
 
   //data methods
   refreshData() {
+    console.log('[CurrentAlarmsWidget] refreshData called');
     if(this.state.autoRefresh == true)
       this.loadData();
   }
 
   loadData() {
+    console.log('[CurrentAlarmsWidget] loadData called');
     var self = this;
     //call api for stats data
     Morpheus.api.health.alarmStats().then(function(statsResults) {
@@ -70,10 +76,13 @@ class CurrentAlarmsWidget extends React.Component {
     newState.error = false;
     newState.errorMessage = null;
     //update the state
+    console.log('[CurrentAlarmsWidget] setData updating state:', newState);
+
     this.setState(newState);
   }
 
   render() {
+    console.log('[CurrentAlarmsWidget] render called, current state:', this.state);
     //setup
     var showChart = this.state.data && this.state.loaded == true;
     var countValue = '';

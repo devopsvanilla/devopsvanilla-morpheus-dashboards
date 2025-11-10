@@ -7,6 +7,7 @@ class CustomWidget extends React.Component {
 
   constructor(props) {
     super(props);
+    console.log('[CustomWidget] Constructor called with props:', props);
 
     // Parse widget configuration from props
     const config = this.parseConfig(props);
@@ -32,9 +33,11 @@ class CustomWidget extends React.Component {
     this.parseConfig = this.parseConfig.bind(this);
     this.handleIframeLoad = this.handleIframeLoad.bind(this);
     this.handleIframeError = this.handleIframeError.bind(this);
+    console.log('[CustomWidget] Constructor completed, initial state:', this.state);
   }
 
   componentDidMount() {
+    console.log('[CustomWidget] componentDidMount called');
     // Mark as loaded once component is mounted
     this.loadData();
 
@@ -45,6 +48,7 @@ class CustomWidget extends React.Component {
     if (this.state.autoRefresh && this.state.refreshInterval > 0) {
       this.refreshTimer = setInterval(() => {
         this.reloadIframe();
+    console.log('[CustomWidget] componentDidMount completed');
       }, this.state.refreshInterval * 1000);
     }
   }
@@ -89,6 +93,7 @@ class CustomWidget extends React.Component {
    * Load initial data
    */
   loadData() {
+    console.log('[CustomWidget] loadData called');
     // Validate URL
     if (!this.state.externalUrl || this.state.externalUrl.trim() === '') {
       this.setState({
@@ -111,6 +116,7 @@ class CustomWidget extends React.Component {
    * Handle refresh event from Morpheus
    */
   refreshData() {
+    console.log('[CustomWidget] refreshData called');
     if (this.state.autoRefresh === true) {
       this.reloadIframe();
     }
@@ -147,6 +153,7 @@ class CustomWidget extends React.Component {
   }
 
   render() {
+    console.log('[CustomWidget] render called, current state:', this.state);
     const { loaded, externalUrl, widgetTitle, widgetHeight, showBorder, iframeKey, error, errorMessage } = this.state;
 
     // Check if we have a valid configuration

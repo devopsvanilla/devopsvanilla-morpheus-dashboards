@@ -6,6 +6,7 @@ class RecentActivityWidget extends React.Component {
 
   constructor(props) {
     super(props);
+    console.log('[RecentActivityWidget] Constructor called with props:', props);
     //set state
     this.state = {
       loaded: false,
@@ -20,11 +21,14 @@ class RecentActivityWidget extends React.Component {
     //bind methods
     this.setData = this.setData.bind(this);
     this.refreshData = this.refreshData.bind(this);
+    console.log('[RecentActivityWidget] Constructor completed, initial state:', this.state);
   }
 
   componentDidMount() {
+    console.log('[RecentActivityWidget] componentDidMount called');
     this.loadData();
     $(document).on('morpheus:refresh', this.refreshData);
+    console.log('[RecentActivityWidget] componentDidMount completed');
   }
 
   componentDidUpdate() {
@@ -34,11 +38,13 @@ class RecentActivityWidget extends React.Component {
 
   //data methods
   refreshData() {
+    console.log('[RecentActivityWidget] refreshData called');
     if(this.state.autoRefresh == true)
       this.loadData();
   }
 
   loadData() {
+    console.log('[RecentActivityWidget] loadData called');
     //call api for data...
     var apiQuery = '';
     var apiOptions = { max:5 };
@@ -46,6 +52,7 @@ class RecentActivityWidget extends React.Component {
   }
 
   setData(results) {
+    console.log('[RecentActivityWidget] setData called with results:', results);
     //set it
     var newState = {};
     newState.data = {};
@@ -61,10 +68,13 @@ class RecentActivityWidget extends React.Component {
     newState.error = false;
     newState.errorMessage = null;
     //update the state
+    console.log('[RecentActivityWidget] setData updating state:', newState);
+
     this.setState(newState);
   }
 
   render() {
+    console.log('[RecentActivityWidget] render called, current state:', this.state);
     //setup
     var isLoaded = this.state.data && this.state.data.loaded == true;
     var itemList = isLoaded == true && this.state.data.items ? this.state.data.items : [];

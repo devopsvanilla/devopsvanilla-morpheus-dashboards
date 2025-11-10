@@ -6,6 +6,7 @@ class InstanceCountCloudWidget extends React.Component {
   
   constructor(props) {
     super(props);
+    console.log('[InstanceCountCloudWidget] Constructor called with props:', props);
     //set state
     this.state = {
       loaded:false,
@@ -19,22 +20,27 @@ class InstanceCountCloudWidget extends React.Component {
     //bind methods
     this.setData = this.setData.bind(this);
     this.refreshData = this.refreshData.bind(this);
+    console.log('[InstanceCountCloudWidget] Constructor completed, initial state:', this.state);
   }
 
   componentDidMount() {
+    console.log('[InstanceCountCloudWidget] componentDidMount called');
     //load the data
     this.loadData();
     //configure auto refresh
     $(document).on('morpheus:refresh', this.refreshData);
+    console.log('[InstanceCountCloudWidget] componentDidMount completed');
   }
 
   //data methods
   refreshData() {
+    console.log('[InstanceCountCloudWidget] refreshData called');
     if(this.state.autoRefresh == true)
       this.loadData();
   }
 
   loadData() {
+    console.log('[InstanceCountCloudWidget] loadData called');
     var self = this;
     //call api for data..
     var optionSourceService = Morpheus.GlobalOptionSourceService || new Morpheus.OptionSourceService();
@@ -43,7 +49,7 @@ class InstanceCountCloudWidget extends React.Component {
       //load instance stats
       var apiFilter;
       var apiOptions = {};
-      Morpheus.api.instances.count('group(provisionZoneId:count(id))').then(function(results) {
+    Morpheus.api.instances.count('group(provisionZoneId:count(id))').then(function(results) {
         if(results.success == true && results.items) {
           var lookupData = { type:'zone', items:zoneList };
           //set zone names
@@ -61,6 +67,7 @@ class InstanceCountCloudWidget extends React.Component {
   }
 
   setData(results) {
+    console.log('[InstanceCountCloudWidget] setData called with results:', results);
     //set it
     var newState = {};
     newState.data = {};
@@ -82,6 +89,8 @@ class InstanceCountCloudWidget extends React.Component {
     newState.error = false;
     newState.errorMessage = null;
     //update the state
+    console.log('[InstanceCountCloudWidget] setData updating state:', newState);
+
     this.setState(newState);
   }
 
@@ -98,6 +107,7 @@ class InstanceCountCloudWidget extends React.Component {
   }
 
   render() {
+    console.log('[InstanceCountCloudWidget] render called, current state:', this.state);
     //setup
     var showChart = this.state.data && this.state.loaded == true;
     var countValue = '';

@@ -19,9 +19,11 @@ class GroupWorkloadCountWidget extends React.Component {
     this.setData = this.setData.bind(this);
     this.loadData = this.loadData.bind(this);
     this.refreshData = this.refreshData.bind(this);
+    console.log('[GroupWorkloadCountWidget] Constructor completed, initial state:', this.state);
   }
 
   componentDidMount() {
+    console.log('[GroupWorkloadCountWidget] componentDidMount called');
     //load the data
     this.loadData();
     //auto refresh
@@ -29,10 +31,12 @@ class GroupWorkloadCountWidget extends React.Component {
     //search selector?
     if(this.props.searchSelector)
       $(document).on('morpheus:list.search' + this.props.searchSelector, this.loadData);
+    console.log('[GroupWorkloadCountWidget] componentDidMount completed');
   }
 
   //data methods
   refreshData() {
+    console.log('[GroupWorkloadCountWidget] refreshData called');
     if(this.state.autoRefresh == true)
       this.loadData();
   }
@@ -46,7 +50,7 @@ class GroupWorkloadCountWidget extends React.Component {
       //load instance stats
       var apiQuery = 'group(server.provisionSiteId:count(id)) managed = true';
       var apiOptions = { ignoreStatus:true, nodeFormat:'all' };
-      Morpheus.api.containers.count(apiQuery, apiOptions).then(function(results) {
+    Morpheus.api.containers.count(apiQuery, apiOptions).then(function(results) {
         if(results.success == true && results.items) {
           var lookupData = { type:'group', items:groupList };
           //set group names
@@ -64,6 +68,7 @@ class GroupWorkloadCountWidget extends React.Component {
   }
 
   setData(results) {
+    console.log('[GroupWorkloadCountWidget] setData called with results:', results);
     //set it
     var newState = {};
     newState.data = {};
@@ -83,6 +88,8 @@ class GroupWorkloadCountWidget extends React.Component {
     newState.error = false;
     newState.errorMessage = null;
     //update the state
+    console.log('[GroupWorkloadCountWidget] setData updating state:', newState);
+
     this.setState(newState);
   }
 
@@ -105,6 +112,7 @@ class GroupWorkloadCountWidget extends React.Component {
   }
 
   render() {
+    console.log('[GroupWorkloadCountWidget] render called, current state:', this.state);
     //setup
     //render
     return(

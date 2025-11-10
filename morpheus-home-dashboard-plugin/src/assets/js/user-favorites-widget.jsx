@@ -6,6 +6,7 @@ class UserFavoritesWidget extends React.Component {
   
   constructor(props) {
     super(props);
+    console.log('[UserFavoritesWidget] Constructor called with props:', props);
     //set state
     this.state = {
       loaded: false,
@@ -20,31 +21,37 @@ class UserFavoritesWidget extends React.Component {
     //bind methods
     this.setData = this.setData.bind(this);
     this.refreshData = this.refreshData.bind(this);
+    console.log('[UserFavoritesWidget] Constructor completed, initial state:', this.state);
   }
 
   componentDidMount() {
+    console.log('[UserFavoritesWidget] componentDidMount called');
   	this.loadData();
     $(document).on('morpheus:refresh', this.refreshData);
+    console.log('[UserFavoritesWidget] componentDidMount completed');
   }
 
   //data methods
   refreshData() {
+    console.log('[UserFavoritesWidget] refreshData called');
     if(this.state.autoRefresh == true)
       this.loadData();
   }
 
   loadData() {
+    console.log('[UserFavoritesWidget] loadData called');
     //call api for data...
     var apiQuery = '';
     var apiOptions = {max:5, favorites:'true'};
     switch(this.state.type) {
       case 'instance-favorite':
-        Morpheus.api.instances.search(apiQuery, apiOptions).then(this.setData);    
+    Morpheus.api.instances.search(apiQuery, apiOptions).then(this.setData);    
         break;
     }
   }
 
   setData(results) {
+    console.log('[UserFavoritesWidget] setData called with results:', results);
     //set it
     var newState = {};
     newState.data = {};
@@ -58,10 +65,13 @@ class UserFavoritesWidget extends React.Component {
     newState.error = false;
     newState.errorMessage = null;
     //update the state
+    console.log('[UserFavoritesWidget] setData updating state:', newState);
+
     this.setState(newState);
   }
 
   render() {
+    console.log('[UserFavoritesWidget] render called, current state:', this.state);
     //setup
     var showTable = this.state.data && this.state.loaded == true;
     var itemList = this.state.data && this.state.data.items ? this.state.data.items : [];

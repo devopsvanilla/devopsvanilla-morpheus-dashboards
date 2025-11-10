@@ -6,6 +6,7 @@ class InstanceCountWidget extends React.Component {
   
   constructor(props) {
     super(props);
+    console.log('[InstanceCountWidget] Constructor called with props:', props);
     //set state
     this.state = {
       loaded:false,
@@ -20,22 +21,27 @@ class InstanceCountWidget extends React.Component {
     //bind methods
     this.setData = this.setData.bind(this);
     this.refreshData = this.refreshData.bind(this);
+    console.log('[InstanceCountWidget] Constructor completed, initial state:', this.state);
   }
 
   componentDidMount() {
+    console.log('[InstanceCountWidget] componentDidMount called');
     //load the data
     this.loadData();
     //configure auto refresh
     $(document).on('morpheus:refresh', this.refreshData);
+    console.log('[InstanceCountWidget] componentDidMount completed');
   }
 
   //data methods
   refreshData() {
+    console.log('[InstanceCountWidget] refreshData called');
     if(this.state.autoRefresh == true)
       this.loadData();
   }
 
   loadData() {
+    console.log('[InstanceCountWidget] loadData called');
     //call api for data...
     var apiFilter;
     var apiOptions = {};
@@ -43,6 +49,7 @@ class InstanceCountWidget extends React.Component {
   }
 
   setData(results) {
+    console.log('[InstanceCountWidget] setData called with results:', results);
     //set it
     var newState = {};
     newState.data = {};
@@ -77,6 +84,8 @@ class InstanceCountWidget extends React.Component {
     newState.error = false;
     newState.errorMessage = null;
     //update the state
+    console.log('[InstanceCountWidget] setData updating state:', newState);
+
     this.setState(newState);
   }
 
@@ -93,6 +102,7 @@ class InstanceCountWidget extends React.Component {
   }
 
   render() {
+    console.log('[InstanceCountWidget] render called, current state:', this.state);
     var showChart = this.state.data && this.state.loaded == true;
     var countValue = '';
     if(showChart == true)

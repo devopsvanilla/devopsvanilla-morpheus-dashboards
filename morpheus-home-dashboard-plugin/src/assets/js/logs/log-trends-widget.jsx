@@ -6,6 +6,7 @@ class LogTrendsWidget extends React.Component {
 
   constructor(props) {
     super(props);
+    console.log('[LogTrendsWidget] Constructor called with props:', props);
     //set state
     this.state = {
       loaded: false,
@@ -21,11 +22,14 @@ class LogTrendsWidget extends React.Component {
     this.setData = this.setData.bind(this);
     this.refreshData = this.refreshData.bind(this);
     this.onPillChange = this.onPillChange.bind(this);
+    console.log('[LogTrendsWidget] Constructor completed, initial state:', this.state);
   }
 
   componentDidMount() {
+    console.log('[LogTrendsWidget] componentDidMount called');
     this.loadData();
     $(document).on('morpheus:refresh', this.refreshData);
+    console.log('[LogTrendsWidget] componentDidMount completed');
   }
 
   onPillChange(value) {
@@ -38,11 +42,13 @@ class LogTrendsWidget extends React.Component {
 
   //data methods
   refreshData() {
+    console.log('[LogTrendsWidget] refreshData called');
     if(this.state.autoRefresh == true)
       this.loadData();
   }
 
   loadData() {
+    console.log('[LogTrendsWidget] loadData called');
     //call api for data...
     var apiQuery;
     var apiOptions = { minDocCount:1, max:5, level:'' };
@@ -62,6 +68,7 @@ class LogTrendsWidget extends React.Component {
   }
 
   setData(results) {
+    console.log('[LogTrendsWidget] setData called with results:', results);
     //set it
     var newState = {};
     newState.data = {};
@@ -77,10 +84,13 @@ class LogTrendsWidget extends React.Component {
     newState.error = false;
     newState.errorMessage = null;
     //update the state
+    console.log('[LogTrendsWidget] setData updating state:', newState);
+
     this.setState(newState);
   }
 
   render() {
+    console.log('[LogTrendsWidget] render called, current state:', this.state);
     //setup
     var isLoaded = this.state.data && this.state.data.loaded == true;
     var itemList = isLoaded == true && this.state.data.items ? this.state.data.items : [];

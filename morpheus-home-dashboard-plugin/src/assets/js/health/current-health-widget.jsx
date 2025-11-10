@@ -6,6 +6,7 @@ class CurrentHealthWidget extends React.Component {
   
   constructor(props) {
     super(props);
+    console.log('[CurrentHealthWidget] Constructor called with props:', props);
     //set state
     this.state = {
       loaded: false,
@@ -19,22 +20,27 @@ class CurrentHealthWidget extends React.Component {
     this.loadData = this.loadData.bind(this);
     this.setData = this.setData.bind(this);
     this.refreshData = this.refreshData.bind(this);
+    console.log('[CurrentHealthWidget] Constructor completed, initial state:', this.state);
   }
 
   componentDidMount() {
+    console.log('[CurrentHealthWidget] componentDidMount called');
     //load the data
     this.loadData();
     //configure auto refresh
     $(document).on('morpheus:refresh', this.refreshData);
+    console.log('[CurrentHealthWidget] componentDidMount completed');
   }
 
   //data methods
   refreshData() {
+    console.log('[CurrentHealthWidget] refreshData called');
     if(this.state.autoRefresh == true)
       this.loadData();
   }
 
   loadData() {
+    console.log('[CurrentHealthWidget] loadData called');
     var now = new Date();
     var self = this;
     //call api for data..
@@ -42,6 +48,7 @@ class CurrentHealthWidget extends React.Component {
   }
 
   setData(results) {
+    console.log('[CurrentHealthWidget] setData called with results:', results);
     //data format: [{name:'group by name', values:[ [timestap, value], [] ]}]
     var newState = {};
     newState.data = {};
@@ -55,10 +62,13 @@ class CurrentHealthWidget extends React.Component {
     newState.error = false;
     newState.errorMessage = null;
     //update the state
+    console.log('[CurrentHealthWidget] setData updating state:', newState);
+
     this.setState(newState);
   }
 
   render() {
+    console.log('[CurrentHealthWidget] render called, current state:', this.state);
     //setup
     var isLoaded = this.state.data && this.state.data.loaded == true;
     var showChart = isLoaded == true && this.state.data.success == true;

@@ -6,6 +6,7 @@ class InstanceCountCloudDayWidget extends React.Component {
   
   constructor(props) {
     super(props);
+    console.log('[InstanceCountCloudDayWidget] Constructor called with props:', props);
     //set state
     this.state = {
       loaded: false,
@@ -23,14 +24,17 @@ class InstanceCountCloudDayWidget extends React.Component {
     this.setData = this.setData.bind(this);
     this.refreshData = this.refreshData.bind(this);
     this.onPillChange = this.onPillChange.bind(this);
+    console.log('[InstanceCountCloudDayWidget] Constructor completed, initial state:', this.state);
   }
 
   componentDidMount() {
+    console.log('[InstanceCountCloudDayWidget] componentDidMount called');
     this.timeFormat = d3.timeFormat('%-m/%d');
     //load the data
     this.loadData();
     //configure auto refresh
     $(document).on('morpheus:refresh', this.refreshData);
+    console.log('[InstanceCountCloudDayWidget] componentDidMount completed');
   }
 
   componentDidUpdate(prevProps,prevState) {
@@ -41,11 +45,13 @@ class InstanceCountCloudDayWidget extends React.Component {
 
   //data methods
   refreshData() {
+    console.log('[InstanceCountCloudDayWidget] refreshData called');
     if(this.state.autoRefresh == true)
       this.loadData();
   }
 
   loadData() {
+    console.log('[InstanceCountCloudDayWidget] loadData called');
     var now = new Date();
     var self = this;
     //call api for data..
@@ -63,7 +69,7 @@ class InstanceCountCloudDayWidget extends React.Component {
       var apiQuery = 'group(zoneId:count(parentRefId))';
       var apiOptions = { 'range.startDate':startDate.toISOString(), 'range.type':chartRange, 'range.count':chartCount, max:1000 };
       //execute it
-      Morpheus.api.usage.count(apiQuery, apiOptions).then(function(results) {
+    Morpheus.api.usage.count(apiQuery, apiOptions).then(function(results) {
         if(results.success == true && results.items) {
           var lookupData = { type:'zone', items:zoneList };
           newData = Morpheus.chart.apiDataToTimeseriesData(results.items, lookupData, 25, 25, 10);
@@ -75,6 +81,7 @@ class InstanceCountCloudDayWidget extends React.Component {
   }
 
   setData(results) {
+    console.log('[InstanceCountCloudDayWidget] setData called with results:', results);
     //data format: [{name:'group by name', values:[ [timestap, value], [] ]}]
     var newState = {};
     newState.data = {};
@@ -101,6 +108,8 @@ class InstanceCountCloudDayWidget extends React.Component {
     newState.error = false;
     newState.errorMessage = null;
     //update the state
+    console.log('[InstanceCountCloudDayWidget] setData updating state:', newState);
+
     this.setState(newState);
   }
 
@@ -158,6 +167,7 @@ class InstanceCountCloudDayWidget extends React.Component {
   }
 
   render() {
+    console.log('[InstanceCountCloudDayWidget] render called, current state:', this.state);
     //setup
     var pillList = [
       {name:'Week', value:'days'},

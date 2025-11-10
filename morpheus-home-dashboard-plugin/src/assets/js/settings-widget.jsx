@@ -6,6 +6,7 @@ class SettingsWidget extends React.Component {
 
 	constructor(props) {
 		super(props);
+    console.log('[SettingsWidget] Constructor called with props:', props);
 		//set state
 		this.state = {
 			filters: props.filters,
@@ -42,6 +43,7 @@ class SettingsWidget extends React.Component {
 	}
 
 	render() {
+    console.log('[SettingsWidget] render called, current state:', this.state);
 		//setup
 		let filters = ""
 		if(this.state.filters) {

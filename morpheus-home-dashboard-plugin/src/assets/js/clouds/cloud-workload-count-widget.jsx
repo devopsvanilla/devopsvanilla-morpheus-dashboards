@@ -19,9 +19,11 @@ class CloudWorkloadCountWidget extends React.Component {
     this.setData = this.setData.bind(this);
     this.loadData = this.loadData.bind(this);
     this.refreshData = this.refreshData.bind(this);
+    console.log('[CloudWorkloadCountWidget] Constructor completed, initial state:', this.state);
   }
 
   componentDidMount() {
+    console.log('[CloudWorkloadCountWidget] componentDidMount called');
     //load the data
     this.loadData();
     //auto refresh
@@ -29,10 +31,12 @@ class CloudWorkloadCountWidget extends React.Component {
     //search selector?
     if(this.props.searchSelector)
       $(document).on('morpheus:list.search' + this.props.searchSelector, this.loadData);
+    console.log('[CloudWorkloadCountWidget] componentDidMount completed');
   }
 
   //data methods
   refreshData() {
+    console.log('[CloudWorkloadCountWidget] refreshData called');
     if(this.state.autoRefresh == true)
       this.loadData();
   }
@@ -49,6 +53,7 @@ class CloudWorkloadCountWidget extends React.Component {
   }
 
   setData(results) {
+    console.log('[CloudWorkloadCountWidget] setData called with results:', results);
     //set it
     var newState = {};
     newState.data = {};
@@ -68,6 +73,8 @@ class CloudWorkloadCountWidget extends React.Component {
     newState.error = false;
     newState.errorMessage = null;
     //update the state
+    console.log('[CloudWorkloadCountWidget] setData updating state:', newState);
+
     this.setState(newState);
   }
 
@@ -91,6 +98,7 @@ class CloudWorkloadCountWidget extends React.Component {
   }
 
   render() {
+    console.log('[CloudWorkloadCountWidget] render called, current state:', this.state);
     //setup
     //render
     return(

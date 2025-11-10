@@ -19,17 +19,21 @@ class ClusterTypeCountWidget extends React.Component {
     this.setData = this.setData.bind(this);
     this.refreshData = this.refreshData.bind(this);
     this.onLegendClick = this.onLegendClick.bind(this);
+    console.log('[ClusterTypeCountWidget] Constructor completed, initial state:', this.state);
   }
 
   componentDidMount() {
+    console.log('[ClusterTypeCountWidget] componentDidMount called');
     //load the data
     this.loadData();
     //auto refresh
     $(document).on('morpheus:refresh', this.refreshData);
+    console.log('[ClusterTypeCountWidget] componentDidMount completed');
   }
 
   //data methods
   refreshData() {
+    console.log('[ClusterTypeCountWidget] refreshData called');
     if(this.state.autoRefresh == true)
       this.loadData();
   }
@@ -40,6 +44,7 @@ class ClusterTypeCountWidget extends React.Component {
   }
 
   setData(results) {
+    console.log('[ClusterTypeCountWidget] setData called with results:', results);
     //set it
     var newState = {};
     newState.data = {};
@@ -59,6 +64,8 @@ class ClusterTypeCountWidget extends React.Component {
     newState.error = false;
     newState.errorMessage = null;
     //update the state
+    console.log('[ClusterTypeCountWidget] setData updating state:', newState);
+
     this.setState(newState);
   }
 
@@ -97,6 +104,7 @@ class ClusterTypeCountWidget extends React.Component {
   }
 
   render() {
+    console.log('[ClusterTypeCountWidget] render called, current state:', this.state);
     //setup
     //render
     return(

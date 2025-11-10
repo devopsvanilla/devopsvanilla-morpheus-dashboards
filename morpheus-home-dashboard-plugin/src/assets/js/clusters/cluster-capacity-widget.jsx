@@ -19,13 +19,16 @@ class ClusterCapacityWidget extends React.Component {
     this.setData = this.setData.bind(this);
     this.refreshData = this.refreshData.bind(this);
     this.findDataItem = this.findDataItem.bind(this);
+    console.log('[ClusterCapacityWidget] Constructor completed, initial state:', this.state);
   }
 
   componentDidMount() {
+    console.log('[ClusterCapacityWidget] componentDidMount called');
     //load the data
     this.loadData();
     //auto refresh
     $(document).on('morpheus:refresh', this.refreshData);
+    console.log('[ClusterCapacityWidget] componentDidMount completed');
   }
 
   componentDidUpdate() {
@@ -38,6 +41,7 @@ class ClusterCapacityWidget extends React.Component {
 
   //data methods
   refreshData() {
+    console.log('[ClusterCapacityWidget] refreshData called');
     if(this.state.autoRefresh == true)
       this.loadData();
   }
@@ -54,6 +58,7 @@ class ClusterCapacityWidget extends React.Component {
   }
 
   setData(results) {
+    console.log('[ClusterCapacityWidget] setData called with results:', results);
     //set it
     var newState = {};
     newState.data = {};
@@ -73,10 +78,13 @@ class ClusterCapacityWidget extends React.Component {
     newState.error = false;
     newState.errorMessage = null;
     //update the state
+    console.log('[ClusterCapacityWidget] setData updating state:', newState);
+
     this.setState(newState);
   }
 
   render() {
+    console.log('[ClusterCapacityWidget] render called, current state:', this.state);
     //memory
     var memoryChartTitle = 'n/a';
     var memoryChartLabel = 'memory';

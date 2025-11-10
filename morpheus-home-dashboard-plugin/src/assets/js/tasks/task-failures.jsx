@@ -6,6 +6,7 @@ class TaskFailWidget extends React.Component {
   
   constructor(props) {
     super(props);
+    console.log('[TaskFailWidget] Constructor called with props:', props);
     //set state
     this.state = {
       loaded: false,
@@ -20,25 +21,31 @@ class TaskFailWidget extends React.Component {
     //bind methods
     this.setData = this.setData.bind(this);
     this.refreshData = this.refreshData.bind(this);
+    console.log('[TaskFailWidget] Constructor completed, initial state:', this.state);
   }
 
   componentDidMount() {
+    console.log('[TaskFailWidget] componentDidMount called');
   	this.loadData();
     $(document).on('morpheus:refresh', this.refreshData);
+    console.log('[TaskFailWidget] componentDidMount completed');
   }
 
   //data methods
   refreshData() {
+    console.log('[TaskFailWidget] refreshData called');
     if(this.state.autoRefresh == true)
       this.loadData();
   }
 
   loadData() {
+    console.log('[TaskFailWidget] loadData called');
     //call api for data...
     Morpheus.api.executions.tasks.search('',{status:'failed'}).then(this.setData)
   }
 
   setData(results) {
+    console.log('[TaskFailWidget] setData called with results:', results);
     let data = results.data.map(result => {
       let name = result.execution.name
       let link = result.execution.link
@@ -65,6 +72,7 @@ class TaskFailWidget extends React.Component {
   }
 
   render() {
+    console.log('[TaskFailWidget] render called, current state:', this.state);
     //setup
     var itemList = this.state.data || [];
     var showTable = this.state.data && this.state.loaded == true;

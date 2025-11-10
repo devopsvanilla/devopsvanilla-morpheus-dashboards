@@ -6,6 +6,7 @@ class EnvironmentCountWidget extends React.Component {
   
   constructor(props) {
     super(props);
+    console.log('[EnvironmentCountWidget] Constructor called with props:', props);
     //set state
     this.state = {
       loaded: false,
@@ -19,29 +20,36 @@ class EnvironmentCountWidget extends React.Component {
     this.loadData = this.loadData.bind(this);
     this.setData = this.setData.bind(this);
     this.refreshData = this.refreshData.bind(this);
+    console.log('[EnvironmentCountWidget] Constructor completed, initial state:', this.state);
   }
 
   componentDidMount() {
+    console.log('[EnvironmentCountWidget] componentDidMount called');
     //load the data
     this.loadData();
     //configure auto refresh
     $(document).on('morpheus:refresh', this.refreshData);
+    console.log('[EnvironmentCountWidget] componentDidMount completed, auto-refresh listener attached');
   }
 
   //data methods
   refreshData() {
+    console.log('[EnvironmentCountWidget] refreshData called, autoRefresh:', this.state.autoRefresh);
     if(this.state.autoRefresh == true)
       this.loadData();
   }
 
   loadData() {
+    console.log('[EnvironmentCountWidget] loadData called');
     var now = new Date();
     var self = this;
     //call api for data..
+    console.log('[EnvironmentCountWidget] Calling Morpheus.api.health.counts()');
     Morpheus.api.health.counts().then(this.setData);
   }
 
   setData(results) {
+    console.log('[EnvironmentCountWidget] setData called with results:', results);
     var newState = {};
     newState.data = {};
     //set the data list
@@ -59,15 +67,18 @@ class EnvironmentCountWidget extends React.Component {
     newState.date = Date.now();
     newState.error = false;
     newState.errorMessage = null;
+    console.log('[EnvironmentCountWidget] setData updating state:', newState);
     //update the state
     this.setState(newState);
   }
 
   render() {
+    console.log('[EnvironmentCountWidget] render called, current state:', this.state);
     //setup
     var isLoaded = this.state.data && this.state.data.loaded == true;
     var showChart = isLoaded == true && this.state.data.success == true;
     var countData = this.state.data ? this.state.data : {};
+    console.log('[EnvironmentCountWidget] render - isLoaded:', isLoaded, 'showChart:', showChart, 'countData:', countData);
     //render
     return (
       <Widget>

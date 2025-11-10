@@ -6,6 +6,7 @@ class LogCountWidget extends React.Component {
   
   constructor(props) {
     super(props);
+    console.log('[LogCountWidget] Constructor called with props:', props);
     //filter config
     var searchOptions = { offset:0, max:10, stats:'true', timeframe:'today'};
     var searchFilter = '';
@@ -26,25 +27,31 @@ class LogCountWidget extends React.Component {
     //bind methods
     this.setData = this.setData.bind(this);
     this.refreshData = this.refreshData.bind(this);
+    console.log('[LogCountWidget] Constructor completed, initial state:', this.state);
   }
 
   componentDidMount() {
+    console.log('[LogCountWidget] componentDidMount called');
     this.loadData();
     $(document).on('morpheus:refresh', this.refreshData);
+    console.log('[LogCountWidget] componentDidMount completed');
   }
 
   //data methods
   refreshData() {
+    console.log('[LogCountWidget] refreshData called');
     if(this.state.autoRefresh == true)
       this.loadData();
   }
 
   loadData() {
+    console.log('[LogCountWidget] loadData called');
     //call api for data...
     Morpheus.api.logs.search(this.state.filter, this.state.options).then(this.setData);
   }
 
   setData(results) {
+    console.log('[LogCountWidget] setData called with results:', results);
     var searchFilter = results.config.filter;
     var searchOptions = results.config.options;
     //set it
@@ -94,6 +101,8 @@ class LogCountWidget extends React.Component {
       }
     }
     //update the state
+    console.log('[LogCountWidget] setData updating state:', newState);
+
     this.setState(newState);
   }
 
@@ -114,6 +123,7 @@ class LogCountWidget extends React.Component {
   }
 
   render() {
+    console.log('[LogCountWidget] render called, current state:', this.state);
     //setup
     var showChart = this.state.data && this.state.loaded == true;
     //render

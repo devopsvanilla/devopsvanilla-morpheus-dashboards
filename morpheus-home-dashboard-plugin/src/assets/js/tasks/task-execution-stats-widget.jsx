@@ -6,6 +6,7 @@ class TaskExecutionStatsWidget extends React.Component {
 
   constructor(props) {
     super(props);
+    console.log('[TaskExecutionStatsWidget] Constructor called with props:', props);
     //set state
     this.state = {
       loaded: false,
@@ -20,15 +21,19 @@ class TaskExecutionStatsWidget extends React.Component {
     this.setData = this.setData.bind(this);
     this.refreshData = this.refreshData.bind(this);
     this.onPillChange = this.onPillChange.bind(this);
+    console.log('[TaskExecutionStatsWidget] Constructor completed, initial state:', this.state);
   }
 
   componentDidMount() {
+    console.log('[TaskExecutionStatsWidget] componentDidMount called');
     this.loadData();
     $(document).on('morpheus:refresh', this.refreshData);
+    console.log('[TaskExecutionStatsWidget] componentDidMount completed');
   }
 
   //data methods
   refreshData() {
+    console.log('[TaskExecutionStatsWidget] refreshData called');
     if(this.state.autoRefresh == true)
       this.loadData();
   }
@@ -42,6 +47,7 @@ class TaskExecutionStatsWidget extends React.Component {
   }
 
   loadData() {
+    console.log('[TaskExecutionStatsWidget] loadData called');
     //call api for data...
     var apiQuery = 'group(status:count(id))';
     var apiOptions = {};
@@ -57,6 +63,7 @@ class TaskExecutionStatsWidget extends React.Component {
   }
 
   setData(results) {
+    console.log('[TaskExecutionStatsWidget] setData called with results:', results);
     //set it
     var newState = {};
     newState.data = {};
@@ -100,10 +107,13 @@ class TaskExecutionStatsWidget extends React.Component {
     newState.error = false;
     newState.errorMessage = null;
     //update the state
+    console.log('[TaskExecutionStatsWidget] setData updating state:', newState);
+
     this.setState(newState);
   }
 
   render() {
+    console.log('[TaskExecutionStatsWidget] render called, current state:', this.state);
     //setup
     var pillList = [
       {name:$L({code:'gomorpheus.time.oneDay'}), value:1},
