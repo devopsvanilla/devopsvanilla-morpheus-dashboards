@@ -19,6 +19,50 @@ This project provides a comprehensive collection of **custom dashboard plugins**
 - **Target Platform**: MorpheusData Appliance v8.0+
 - **Framework**: Morpheus Plugin Core
 
+- ### Solution Architecture
+
+```mermaid
+graph TB
+    subgraph Morpheus["MorpheusData Appliance v8.0+"]
+        UI["Morpheus UI Dashboard"]
+        API["Morpheus Plugin API"]
+        Core["Plugin Core Framework"]
+    end
+    
+    subgraph Plugins["DevOpsVanilla Plugins"]
+        Home["Home Dashboard Plugin"]
+        Custom["Custom Widget Items"]
+        Standard["Standard Dashboards"]
+    end
+    
+    subgraph Features["Key Capabilities"]
+        RealTime["Real-time Metrics"]
+        Custom2["Custom Widgets"]
+        Config["Configurable Layout"]
+        Infra["Infrastructure Visibility"]
+    end
+    
+    subgraph Tech["Technology Stack"]
+        Groovy["Groovy 3.0.7"]
+        Gradle["Gradle 7.3+"]
+        Java["Java 17+"]
+        PluginCore["Morpheus Plugin Core 1.2.7"]
+    end
+    
+    UI --> Home
+    UI --> Custom
+    UI --> Standard
+    Home --> API
+    Custom --> Core
+    Standard --> Core
+    API --> Features
+    Core --> Tech
+    RealTime --> Home
+    Custom2 --> Custom
+    Config --> Home
+    Infra --> Standard
+```
+
 ---
 
 ## Project Structure
