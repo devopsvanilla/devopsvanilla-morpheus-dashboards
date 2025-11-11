@@ -15,7 +15,7 @@ class CustomWidget extends React.Component {
     this.state = {
       loaded: false,
       autoRefresh: config.autoRefresh,
-      externalUrl: 'https://morpheus-container-poc.eastus.cloudapp.azure.com/superset/explore/p/vyBlZxzGYkg/?standalone=1&height=400',
+      externalUrl: 'https://superset-morpheus-container-poc.loonar.dev/superset/explore/p/Mvj64KlZXbE/?standalone=1&height=400',
       widgetTitle: config.widgetTitle || 'Custom Content',
       widgetHeight: config.widgetHeight || 400,
       refreshInterval: config.refreshInterval || 300,
