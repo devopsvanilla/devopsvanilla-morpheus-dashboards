@@ -137,6 +137,7 @@ class HomeDashboardProvider extends AbstractDashboardProvider {
 		//return the items
 		rtn.dashboardItems = dashboardItems
 		return rtn
+			}
 
 			@Override
 	ContentSecurityPolicy getContentSecurityPolicy() {
@@ -144,7 +145,7 @@ class HomeDashboardProvider extends AbstractDashboardProvider {
 		// Configurar diretivas CSP necessarias
 		csp.defaultSrc = "'self' https://www.gstatic.com *.githubusercontent.com data: blob: ws: wss:"
 		// Liberar frames de intracoes como Superset e Morpheus Container
-		csp.frameSrc = "'self' https://superset-morpheus-container-poc.loonar.dev http://morpheus-container-poc.eastus.cloudapp.azure.com"
+		csp.frameSrc = ""'self' https: https://superset-morpheus-container-poc.loonar.dev https://morpheus-container-poc.eastus.cloudapp.azure.com"
 		// Liberar scripts
 		csp.scriptSrc = "'self' https://reactjs.org *.jsdelivr.net"
 		// Liberar estilos
