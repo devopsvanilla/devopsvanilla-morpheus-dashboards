@@ -14,7 +14,7 @@ import groovy.util.logging.Slf4j
 
 /**
  * Provides an interface and standard set of methods for creating custom dashboards
- * 
+ *
  * @since 0.13
  * @author bdwheeler
  */
@@ -71,13 +71,13 @@ class HomeDashboardProvider extends AbstractDashboardProvider {
 				'dashboard-item-current-health'
 			],
 			main:[
-				'dashboard-item-user-favorites', 
+				'dashboard-item-user-favorites',
 				'dashboard-item-current-alarms',
 								'dashboard-item-custom-widget',
 			],
 			instances:[
-				'dashboard-item-instance-count', 
-				'dashboard-item-instance-count-cloud', 
+				'dashboard-item-instance-count',
+				'dashboard-item-instance-count-cloud',
 				// 'dashboard-item-instance-count-cloud-day'
 				'dashboard-item-log-count'
 			],
@@ -137,7 +137,9 @@ class HomeDashboardProvider extends AbstractDashboardProvider {
 		//return the items
 		rtn.dashboardItems = dashboardItems
 		return rtn
-			@Override
+	}
+
+	@Override
 	ContentSecurityPolicy getContentSecurityPolicy() {
 		def csp = new ContentSecurityPolicy()
 		// Configurar diretivas CSP necessarias
@@ -155,7 +157,6 @@ class HomeDashboardProvider extends AbstractDashboardProvider {
 		// Usar Permissions-Policy ao inves de Feature-Policy (padrao moderno)
 		csp.permissionsPolicy = "vibrate=(),notifications=(),push=()"
 		return csp
-	}
 	}
 
 }

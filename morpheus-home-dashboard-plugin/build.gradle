@@ -25,7 +25,7 @@ apply plugin: 'com.morpheusdata.morpheus-plugin-gradle'
 
 group = 'com.morpheusdata'
 ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
-version '1.2.0'
+version '1.2.3'
 
 sourceCompatibility = '1.11'
 targetCompatibility = '1.11'
