@@ -137,6 +137,26 @@ class HomeDashboardProvider extends AbstractDashboardProvider {
 		//return the items
 		rtn.dashboardItems = dashboardItems
 		return rtn
+
+			@Override
+	ContentSecurityPolicy getContentSecurityPolicy() {
+		def csp = new ContentSecurityPolicy()
+		// Configurar diretivas CSP necessarias
+		csp.defaultSrc = "'self' https://www.gstatic.com *.githubusercontent.com data: blob: ws: wss:"
+		// Liberar frames de intracoes como Superset e Morpheus Container
+		csp.frameSrc = "'self' https://superset-morpheus-container-poc.loonar.dev http://morpheus-container-poc.eastus.cloudapp.azure.com"
+		// Liberar scripts
+		csp.scriptSrc = "'self' https://reactjs.org *.jsdelivr.net"
+		// Liberar estilos
+		csp.styleSrc = "'self' https: *.bootstrapcdn.com"
+		// Liberar imagens
+		csp.imgSrc = "'self' *.wikimedia.org data:"
+		// Liberar fontes externas (resolva erro de fonte Perplexity)
+		csp.fontSrc = "'self' https://r2cdn.perplexity.ai fonts.gstatic.com data:"
+		// Usar Permissions-Policy ao inves de Feature-Policy (padrao moderno)
+		csp.permissionsPolicy = "vibrate=(),notifications=(),push=()"
+		return csp
+	}
 	}
 
 }
