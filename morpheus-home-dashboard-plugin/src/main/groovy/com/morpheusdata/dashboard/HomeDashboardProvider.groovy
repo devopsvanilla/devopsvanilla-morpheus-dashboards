@@ -10,7 +10,7 @@ import com.morpheusdata.model.DashboardItemType
 import com.morpheusdata.views.HTMLResponse
 import com.morpheusdata.views.ViewModel
 import com.morpheusdata.response.ServiceResponse
-import groovy.util.logging.Slf4j
+groovy.util.logging.Slf4j
 
 /**
  * Provides an interface and standard set of methods for creating custom dashboards
@@ -81,19 +81,6 @@ class HomeDashboardProvider extends AbstractDashboardProvider {
 				// 'dashboard-item-instance-count-cloud-day'
 				'dashboard-item-log-count'
 			],
-			// moved to CloudListDashboardProvider
-			// workloads:[
-			// 	'dashboard-item-group-workload-count',
-			// 	'dashboard-item-cloud-workload-count',
-			// 	'dashboard-item-cluster-workload-count'
-			// ],
-			//clouds:[
-				//'dashboard-item-cloud-count-type',
-			//],
-			// logs:[
-			// 	'dashboard-item-log-count',
-			// 	'dashboard-item-log-trends'
-			// ],
 			jobs:[
 				'dashboard-item-job-execution-stats',
 				'dashboard-item-backup-stats',
@@ -101,12 +88,7 @@ class HomeDashboardProvider extends AbstractDashboardProvider {
 			],
 			activity:[
 				'dashboard-item-recent-activity'
-			]//,
-			//tasks:[
-				//'dashboard-item-task-failures'
-			//]//,
-			//backups:[
-			//]
+			]
 		]
 		def currentGroupRow = 0
 		def currentRow = 0
@@ -142,19 +124,13 @@ class HomeDashboardProvider extends AbstractDashboardProvider {
 	@Override
 	ContentSecurityPolicy getContentSecurityPolicy() {
 		def csp = new ContentSecurityPolicy()
-		// Configurar diretivas CSP necessarias
+		// Corrigir diretivas CSP para custom-widget React/iframe
 		csp.defaultSrc = "'self' https://www.gstatic.com *.githubusercontent.com data: blob: ws: wss:"
-		// Liberar frames de intracoes como Superset e Morpheus Container
 		csp.frameSrc = "'self' https://superset-morpheus-container-poc.loonar.dev http://morpheus-container-poc.eastus.cloudapp.azure.com"
-		// Liberar scripts
 		csp.scriptSrc = "'self' https://reactjs.org *.jsdelivr.net"
-		// Liberar estilos
-		csp.styleSrc = "'self' https: *.bootstrapcdn.com"
-		// Liberar imagens
+		csp.styleSrc = "'self' https: *.bootstrapcdn.com 'unsafe-inline'"
 		csp.imgSrc = "'self' *.wikimedia.org data:"
-		// Liberar fontes externas (resolva erro de fonte Perplexity)
 		csp.fontSrc = "'self' https://r2cdn.perplexity.ai fonts.gstatic.com data:"
-		// Usar Permissions-Policy ao inves de Feature-Policy (padrao moderno)
 		csp.permissionsPolicy = "vibrate=(),notifications=(),push=()"
 		return csp
 	}
