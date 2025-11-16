@@ -10,7 +10,7 @@ import com.morpheusdata.model.DashboardItemType
 import com.morpheusdata.views.HTMLResponse
 import com.morpheusdata.views.ViewModel
 import com.morpheusdata.response.ServiceResponse
-groovy.util.logging.Slf4j
+import groovy.util.logging.Slf4j
 
 /**
  * Provides an interface and standard set of methods for creating custom dashboards
