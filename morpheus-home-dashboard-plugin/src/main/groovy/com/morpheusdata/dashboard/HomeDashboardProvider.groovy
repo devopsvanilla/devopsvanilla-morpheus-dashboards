@@ -123,16 +123,28 @@ class HomeDashboardProvider extends AbstractDashboardProvider {
 
 	@Override
 	ContentSecurityPolicy getContentSecurityPolicy() {
-		def csp = new ContentSecurityPolicy()
+def csp = new ContentSecurityPolicy()
 		// Corrigir diretivas CSP para custom-widget React/iframe
-		csp.defaultSrc = "'self' https://www.gstatic.com *.githubusercontent.com data: blob: ws: wss:"
+		// default-src: apenas recursos gerais (SEM domínios extras que causam fallback)
+		csp.defaultSrc = "'self' data: blob: ws: wss:"
+		
+		// frame-src: libere EXPLICITAMENTE os domínios de iframe
 		csp.frameSrc = "'self' https://superset-morpheus-container-poc.loonar.dev http://morpheus-container-poc.eastus.cloudapp.azure.com"
+		
+		// script-src: nonce substituirá 'unsafe-inline' no template (se usado)
 		csp.scriptSrc = "'self' https://reactjs.org *.jsdelivr.net"
-		csp.styleSrc = "'self' https: *.bootstrapcdn.com 'unsafe-inline'"
+		
+		// style-src: use 'unsafe-inline' (ou {{nonce}} em templates handlebars)
+		// IMPORTANTE: Se usar nonce no template, o navegador ignora 'unsafe-inline' automaticamente
+		csp.styleSrc = "'self' 'unsafe-inline' https: *.bootstrapcdn.com"
+		
+		// img, fonts, connect
 		csp.imgSrc = "'self' *.wikimedia.org data:"
 		csp.fontSrc = "'self' https://r2cdn.perplexity.ai fonts.gstatic.com data:"
+		
+		// Políticas adicionais
 		csp.permissionsPolicy = "vibrate=(),notifications=(),push=()"
-		return csp
-	}
+		
+		return csp	}
 
 }
