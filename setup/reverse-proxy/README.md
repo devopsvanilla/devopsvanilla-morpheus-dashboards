@@ -72,23 +72,28 @@ graph TB
 ## Fluxo Detalhado da Requisição
 
 ### 1️⃣ Usuário Acessa Dashboard Morpheus
-```
+
+```text
 Navegador → https://morpheus.example.com/
 ```
+
 - Usuário acessa interface normal do Morpheus
 - Dashboard carrega com widgets configurados
 
 ### 2️⃣ Widget Customizado Renderiza Iframe
+
 ```jsx
 <iframe 
   src="/superset/dashboard/123" 
   sandbox="allow-scripts allow-same-origin"
 />
 ```
+
 - React component cria iframe apontando para `/superset/`
 - Path relativo é crucial (não URL externa direta)
 
 ### 3️⃣ NGINX Embutido Morpheus Intercepta
+
 ```nginx
 location /superset/ {
     proxy_pass https://127.0.0.1:8001/superset/;
@@ -96,11 +101,13 @@ location /superset/ {
     proxy_hide_header Content-Security-Policy;
 }
 ```
+
 - Morpheus NGINX intercepta requisições para `/superset/`
 - Redireciona para proxy externo na porta 8001
 - Remove headers CSP problemáticos
 
 ### 4️⃣ NGINX Externo Faz Proxy para Superset
+
 ```nginx
 server {
     listen 8001 ssl;
@@ -112,37 +119,46 @@ server {
     }
 }
 ```
+
 - NGINX externo recebe da porta 8001
 - Faz proxy reverso real para Superset externo
 - Manipula headers CSP e CORS
 
 ### 5️⃣ Superset Retorna Conteúdo
-```
+
+```text
 Superset → HTML + CSS + JavaScript
 ```
+
 - Superset processa requisição normalmente
 - Retorna dashboard renderizado
 
 ### 6️⃣ Headers São Ajustados no Retorno
-```
+
+```text
 Original: Content-Security-Policy: frame-ancestors 'none'
 Modificado: [header removido]
 Adicionado: Access-Control-Allow-Origin: *
-```
+
+```text
 - Proxy externo remove/modifica headers restritivos
 - Adiciona headers permissivos para CORS
 
 ### 7️⃣ Morpheus NGINX Entrega ao Widget
-```
+
+```text
 Conteúdo limpo → Custom Widget
 ```
+
 - NGINX Morpheus garante remoção final de CSP
 - Conteúdo chega limpo ao iframe
 
 ### 8️⃣ Iframe Renderiza com Segurança
-```
+
+```text
 Sandbox: allow-scripts, allow-same-origin, allow-forms
 ```
+
 - Iframe renderiza conteúdo com proteções sandbox
 - Usuário vê dashboard integrado perfeitamente
 
@@ -152,12 +168,14 @@ Sandbox: allow-scripts, allow-same-origin, allow-forms
 
 **Localização**: `/morpheus-home-dashboard-plugin/src/main/groovy/com/morpheusdata/dashboard/custom/`
 
-#### Arquivos Principais:
+#### Arquivos Principais
+
 - `CustomWidgetItemProvider.groovy`: Provider do widget
 - `custom-widget.jsx`: Componente React
 - `custom-widget.hbs`: Template Handlebars
 
-#### Recursos:
+#### Recursos
+
 - Incorporação de URLs externas via iframe
 - Parâmetros configuráveis (URL, título, altura, auto-refresh)
 - Sandbox de segurança
@@ -170,12 +188,14 @@ Sandbox: allow-scripts, allow-same-origin, allow-forms
 
 **Localização**: `/setup/reverse-proxy/`
 
-#### Scripts Disponíveis:
+#### Scripts Disponíveis
 
 ##### 1. `setup-reserveproxy.sh`
+
 Configura automaticamente os dois níveis de proxy NGINX.
 
 **O que faz**:
+
 - Cria backups automáticos das configurações existentes
 - Configura proxy externo (NGINX sistema) na porta 8001
 - Configura proxy interno (NGINX Morpheus) no path `/superset/`
@@ -184,9 +204,11 @@ Configura automaticamente os dois níveis de proxy NGINX.
 **Documentação**: [setup-reserveproxy.md](./setup-reserveproxy.md)
 
 ##### 2. `test-reverseproxy.sh`
+
 Valida a configuração do proxy reverso.
 
 **O que testa**:
+
 - Autenticação no Morpheus
 - Status dos serviços NGINX
 - Sintaxe das configurações
@@ -266,7 +288,7 @@ cd setup/reverse-proxy
 
 ## Estrutura de Arquivos
 
-```
+```text
 setup/reverse-proxy/
 ├── README.md                      # Esta documentação
 ├── setup-reserveproxy.sh          # Script de configuração
@@ -284,6 +306,7 @@ setup/reverse-proxy/
 ### Arquivos de Configuração NGINX
 
 #### 1. Proxy Externo
+
 **Arquivo**: `/etc/nginx/sites-available/superset-proxy`
 
 ```nginx
@@ -312,6 +335,7 @@ server {
 ```
 
 #### 2. Proxy Interno
+
 **Arquivo**: `/opt/morpheus/embedded/nginx/conf/sites-available/morpheus.conf`
 
 ```nginx
@@ -328,25 +352,29 @@ location /superset/ {
 ## Casos de Uso
 
 ### 1. Apache Superset
-```
+
+```text
 URL: /superset/dashboard/123?standalone=1
 Uso: Dashboards analíticos integrados
 ```
 
 ### 2. Grafana
-```
+
+```text
 URL: /grafana/d/dashboard-id?orgId=1&kiosk
 Uso: Métricas de infraestrutura em tempo real
 ```
 
 ### 3. Kibana
-```
+
+```text
 URL: /kibana/app/dashboards#/view/id?embed=true
 Uso: Análise de logs centralizados
 ```
 
 ### 4. Tableau
-```
+
+```text
 URL: /tableau/views/dashboard
 Uso: Business intelligence e relatórios
 ```
@@ -354,21 +382,25 @@ Uso: Business intelligence e relatórios
 ## Segurança
 
 ### Sandbox do Iframe
+
 ```javascript
 sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
 ```
+
 - `allow-scripts`: Permite JavaScript (necessário para dashboards)
 - `allow-same-origin`: Trata como mesma origem
 - `allow-forms`: Permite interação com formulários
 - `allow-popups`: Suporta modais e janelas
 
 ### SSL/TLS
+
 - ✅ Morpheus → Usuário: HTTPS
 - ✅ NGINX Interno → NGINX Externo: HTTPS (localhost)
 - ✅ NGINX Externo → Superset: HTTPS
 - 🔒 Toda a cadeia criptografada
 
 ### Headers de Segurança
+
 - CSP removido apenas onde necessário
 - CORS configurado de forma controlada
 - Headers de autenticação preservados
@@ -379,6 +411,7 @@ sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
 ### Problema: Iframe mostra tela branca
 
 **Verificar**:
+
 ```bash
 # 1. Logs NGINX externo
 sudo tail -f /var/log/nginx/error.log
@@ -391,6 +424,7 @@ curl -k https://localhost:8001/superset/
 ```
 
 **Soluções Comuns**:
+
 - Verificar se serviço externo está acessível
 - Confirmar certificados SSL válidos
 - Validar configuração de proxy_pass
@@ -400,6 +434,7 @@ curl -k https://localhost:8001/superset/
 **Causa**: Proxy externo não consegue alcançar serviço
 
 **Solução**:
+
 ```bash
 # Testar conectividade
 curl -I https://superset.example.com/
@@ -414,12 +449,14 @@ sudo iptables -L -n | grep 8001
 ### Problema: Headers CSP ainda bloqueando
 
 **Verificar**:
+
 ```bash
 # Console do navegador (F12)
 # Procurar por: "Refused to frame..."
 ```
 
 **Solução**:
+
 ```bash
 # Instalar módulo headers-more
 sudo apt-get install libnginx-mod-http-headers-more-filter
@@ -431,6 +468,7 @@ sudo systemctl reload nginx
 ### Problema: Auto-refresh não funciona
 
 **Verificar**:
+
 - Configuração do widget (Auto Refresh = ON)
 - Interval configurado (em segundos)
 - Console do navegador para erros JavaScript
@@ -438,6 +476,7 @@ sudo systemctl reload nginx
 ### Problema: Conteúdo cortado
 
 **Solução**:
+
 - Ajustar `Widget Height` para valor maior
 - Testar diferentes alturas: 400, 500, 600, 800px
 
@@ -446,6 +485,7 @@ sudo systemctl reload nginx
 ### Backup das Configurações
 
 Os backups são criados automaticamente em `./bkp/`:
+
 ```bash
 # Listar backups
 ls -lh ./bkp/
@@ -522,7 +562,8 @@ sudo netstat -tulpn | grep nginx
 
 ### Por que dois níveis de proxy?
 
-**Resposta**: 
+**Resposta**:
+
 1. **Nível 1 (Externo)**: Remove headers CSP do serviço externo
 2. **Nível 2 (Interno)**: Garante que Morpheus não adicione CSP próprio
 3. **Resultado**: Conteúdo chega "limpo" ao iframe
@@ -530,6 +571,7 @@ sudo netstat -tulpn | grep nginx
 ### Posso usar para outros serviços além do Superset?
 
 **Sim!** Funciona com:
+
 - Grafana
 - Kibana
 - Tableau
@@ -541,6 +583,7 @@ sudo netstat -tulpn | grep nginx
 ### Qual o impacto na performance?
 
 **Mínimo**:
+
 - Proxy NGINX é extremamente eficiente
 - Latência adicional: ~5-10ms
 - Conteúdo pode ser cacheado (se configurado)
@@ -548,7 +591,8 @@ sudo netstat -tulpn | grep nginx
 
 ### Preciso configurar para cada dashboard?
 
-**Não**: 
+**Não**:
+
 - Setup do proxy é feito **uma vez**
 - Depois, apenas configure widgets com URLs diferentes
 - Exemplo: `/superset/dashboard/1`, `/superset/dashboard/2`, etc.
@@ -556,6 +600,7 @@ sudo netstat -tulpn | grep nginx
 ### Como adicionar autenticação?
 
 Headers de autenticação são preservados:
+
 ```nginx
 proxy_set_header Authorization $http_authorization;
 proxy_set_header Cookie $http_cookie;
@@ -566,37 +611,33 @@ Tokens e cookies do Morpheus passam através dos proxies.
 ## Recursos Adicionais
 
 ### Documentação Relacionada
+
 - [Custom Widget Guide](../../custom-widget.md)
 - [Setup Script Documentation](./setup-reserveproxy.md)
 - [Test Script Documentation](./test-reverseproxy.md)
 
 ### Links Úteis
+
 - [Morpheus Developer Docs](https://developer.morpheusdata.com/)
 - [NGINX Reverse Proxy Guide](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/)
 - [Content Security Policy MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)
 
 ### Suporte
+
 - Issues: Abra uma issue no repositório
 - Logs: Sempre inclua logs ao reportar problemas
 - Configurações: Compartilhe configs (sem dados sensíveis)
 
-## Licença
+## Referências
 
-Esta solução faz parte do projeto Morpheus Dashboard Plugins e está sujeita aos mesmos termos de licença (Apache License 2.0).
-
----
-
-## Changelog
-
-### v1.0.0 (2025-11-16)
-- ✨ Implementação inicial da solução completa
-- 🔧 Scripts de setup e teste automatizados
-- 📚 Documentação abrangente
-- 🔒 Configuração de segurança com sandbox
-- 🔄 Auto-refresh configurável
-- 📦 Backup automático de configurações
-
----
-
-**Desenvolvido por**: DevOps Vanilla  
-**Última atualização**: 16 de Novembro de 2025
+- [Morpheus Developer Zone](https://developer.morpheusdata.com/) – Documentação oficial para desenvolvedores Morpheus
+- [Morpheus Plugin Documentation](https://developer.morpheusdata.com/docs) – Documentação oficial dos plugins Morpheus
+- [NGINX Reverse Proxy](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/) – Guia oficial de proxy reverso NGINX
+- [Content Security Policy (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) – Documentação MDN sobre Content Security Policy
+- [Morpheus API Reference: Activity](https://apidocs.morpheusdata.com/reference/listactivity) – Referência da API Morpheus: Activity
+- [GoMorpheus YouTube Channel](https://www.youtube.com/@Gomorpheus) – Canal oficial GoMorpheus no YouTube
+- [Vídeo GoMorpheus 1](https://www.youtube.com/watch?v=1twoNvPoEV4) – Vídeo GoMorpheus no YouTube
+- [Vídeo GoMorpheus 2](https://www.youtube.com/watch?v=3nAFWWnlFXM) – Vídeo GoMorpheus no YouTube
+- [HPE Support Document sd00006978en_us](https://support.hpe.com/hpesc/public/docDisplay?docId=sd00006978en_us&docLocale=en_US) – Documento de suporte HPE
+- [HPE Support Document sd00006774en_us](https://support.hpe.com/hpesc/public/docDisplay?docId=sd00006774en_us&docLocale=en_US) – Documento de suporte HPE
+- [HPE Support Document sd00006774en_us (seção específica)](https://support.hpe.com/hpesc/public/docDisplay?docId=sd00006774en_us&docLocale=en_US&page=GUID-13B77F8D-BA84-4649-A4C1-D137357E7A78.html) – Documento de suporte HPE (seção específica)

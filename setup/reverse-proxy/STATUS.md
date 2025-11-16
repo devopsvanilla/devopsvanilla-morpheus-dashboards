@@ -87,7 +87,6 @@ Header Feature-Policy ausente.
 ==== Teste completo finalizado. Analise a saída para diagnóstico. ====
 ```
 
-
 ## 🔍 Interpretação do Resultado
 
 - ✅ **Configuração aplicada:** A configuração via script de setup foi aplicada com sucesso (NGINX ativo e `nginx -t` ok), e o bloco `location /superset/` no proxy externo está corretamente definido.
@@ -163,7 +162,6 @@ Verificar se o arquivo `morpheus.conf` com o `location /superset/` está realmen
 
 ## 🎯 Conclusão
 
-O comportamento observado (**302 para `/login/auth`** e presença de CSP) aponta para **falta de sessão de UI** durante o teste – **não para falha do proxy**. 
+O comportamento observado (**302 para `/login/auth`** e presença de CSP) aponta para **falta de sessão de UI** durante o teste – **não para falha do proxy**.
 
 ✅ **Próximo passo crítico:** Após validar o proxy externo diretamente e/ou ajustar o teste para usar cookies de sessão, a tendência é que o conteúdo do Superset seja servido corretamente em `/superset/` dentro do Morpheus.
-
