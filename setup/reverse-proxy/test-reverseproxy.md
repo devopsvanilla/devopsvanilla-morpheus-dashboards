@@ -384,6 +384,89 @@ Tokens Morpheus têm tempo de vida limitado. Se os testes demorarem muito, o tok
 - ✅ Quando usuários reportarem problemas de acesso
 - ℹ️ Opcionalmente em rotinas de manutenção preventiva
 
+## Próximos Passos
+
+### Validação com Sessão de UI (Cookie-based Authentication)
+
+O teste atual usa autenticação via Bearer token (API), mas o acesso ao `/superset/` no Morpheus requer sessão de UI com cookies (`JSESSIONID` e `XSRF-TOKEN`). Para testar corretamente o fluxo completo de integração com a interface do usuário:
+
+#### 1. Criar Script de Login com Cookie Jar
+
+```bash
+#!/bin/bash
+# login-morpheus.sh - Realiza login UI e salva cookies
+
+USERNAME="admin"
+read -sp "Digite a senha: " PASSWORD
+echo
+
+MORPHEUS_URL="https://morpheus.example.com"
+COOKIEJAR="/tmp/morpheus-cookies.txt"
+
+# Login na UI (ajuste o endpoint conforme necessário)
+curl -k -c "$COOKIEJAR" -b "$COOKIEJAR" \
+  -X POST "$MORPHEUS_URL/login/authenticate" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "username=$USERNAME&password=$PASSWORD"
+
+echo "Cookies salvos em $COOKIEJAR"
+```
+
+#### 2. Testar Proxy com Cookies
+
+```bash
+#!/bin/bash
+# test-proxy-with-session.sh - Testa proxy usando sessão de UI
+
+COOKIEJAR="/tmp/morpheus-cookies.txt"
+PROXY_URL="https://morpheus.example.com/superset/"
+
+if [ ! -f "$COOKIEJAR" ]; then
+  echo "Erro: Execute login-morpheus.sh primeiro"
+  exit 1
+fi
+
+echo "==== Testando acesso ao Superset via proxy com sessão de UI ===="
+curl -k -i -b "$COOKIEJAR" "$PROXY_URL" | head -50
+```
+
+#### 3. Workflow Completo
+
+```bash
+# 1. Realizar login e obter cookies
+./login-morpheus.sh
+
+# 2. Testar acesso com cookies salvos
+./test-proxy-with-session.sh
+
+# 3. Limpar cookies após teste
+rm /tmp/morpheus-cookies.txt
+```
+
+#### Por Que Isso É Necessário?
+
+- **Bearer Token**: Válido apenas para API endpoints (`/api/*`)
+- **Cookies de Sessão**: Requeridos para UI paths como `/superset/`, `/dashboard/*`, `/provisioning/*`
+- **Redirecionamento 302**: Indica ausência de sessão válida, não falha do proxy
+
+#### Resultado Esperado
+
+Com cookies válidos de sessão:
+
+```text
+HTTP/2 200
+content-type: text/html; charset=utf-8
+...
+<html><!-- Conteúdo do Superset --></html>
+```
+
+Sem cookies válidos (comportamento atual):
+
+```text
+HTTP/2 302
+location: https://morpheus.example.com/login/auth
+```
+
 ## Limpeza
 
 O script cria um arquivo temporário que pode ser removido:

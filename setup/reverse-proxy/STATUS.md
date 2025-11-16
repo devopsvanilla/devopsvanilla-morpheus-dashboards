@@ -1,4 +1,23 @@
-# STATUS
+# 🔄 STATUS
+
+> **📅 Última atualização:** 16 de novembro de 2025  
+> **🚧 Status:** WIP (Work in Progress)
+
+## 📋 TL;DR
+
+**Situação Atual:** A configuração do proxy reverso foi aplicada com sucesso, mas os testes automatizados falharam com HTTP 302 (redirecionamento para login).
+
+**Causa Raiz:** O teste usa autenticação via API (Bearer token), mas a rota `/superset/` na UI do Morpheus requer sessão baseada em cookies (`JSESSIONID`/`XSRF-TOKEN`).
+
+**Próximos Passos:**
+
+1. ✅ Validar proxy externo diretamente (porta 8001)
+2. ✅ Implementar teste com cookie jar para simular sessão de UI
+3. 🔧 Corrigir warning de `server_name` duplicado
+
+**Expectativa:** O proxy está provavelmente funcionando corretamente; apenas a metodologia de teste precisa ser ajustada.
+
+---
 
 Essa solução ainda não surtiu o efeito esperado mas dá indícios que terá sucesso.
 
@@ -69,70 +88,82 @@ Header Feature-Policy ausente.
 ```
 
 
-## Interpretação do Resultado
+## 🔍 Interpretação do Resultado
 
-- A configuração via script de setup foi aplicada com sucesso (NGINX ativo e `nginx -t` ok), e o bloco `location /superset/` no proxy externo está corretamente definido.
-- O teste de acesso retornou `HTTP/2 302` com `location: https://morpheus-dev.loonar.dev/login/auth`.
+- ✅ **Configuração aplicada:** A configuração via script de setup foi aplicada com sucesso (NGINX ativo e `nginx -t` ok), e o bloco `location /superset/` no proxy externo está corretamente definido.
+
+- 🔄 **Redirecionamento 302:** O teste de acesso retornou `HTTP/2 302` com `location: https://morpheus-dev.loonar.dev/login/auth`.
   
-    Isso indica que a requisição feita para `https://<morpheus>/superset/` foi interceptada pelo NGINX embutido do Morpheus e redirecionada para a página de login do Morpheus (fluxo de UI), pois não havia sessão de usuário válida (cookies `JSESSIONID`/`XSRF-TOKEN`).
+    **Significado:** A requisição para `https://<morpheus>/superset/` foi interceptada pelo NGINX embutido do Morpheus e redirecionada para a página de login (fluxo de UI), pois **não havia sessão de usuário válida** (cookies `JSESSIONID`/`XSRF-TOKEN`).
   
-    O header `content-security-policy` observado pertence à resposta do próprio Morpheus (página de login), e não ao conteúdo proxied do Superset. Portanto, a presença de CSP aqui é esperada e não comprova falha do proxy.
-- O aviso `conflicting server name "localhost" on 0.0.0.0:8001, ignored` é um warning do NGINX (existem múltiplos server blocks com o mesmo `server_name`/porta). Não impede funcionamento, mas é recomendável ajustar para limpar o alerta.
-- O header `Feature-Policy` não apareceu. Observação: esta diretiva foi substituída por `Permissions-Policy` nas versões modernas dos navegadores; a ausência de `Feature-Policy` por si só não é problema.
+    ℹ️ O header `content-security-policy` observado pertence à **resposta do próprio Morpheus** (página de login), e não ao conteúdo proxied do Superset. Portanto, a presença de CSP aqui é **esperada** e não comprova falha do proxy.
 
-Em resumo: o 302 de login mostra que o teste exercitou a camada de UI do Morpheus (que exige sessão), e não chegou a validar o caminho proxied até o Superset. O proxy pode estar correto, mas o teste precisa simular uma sessão autenticada (cookies) ou validar diretamente o proxy externo (porta 8001).
+- ⚠️ **Warning NGINX:** O aviso `conflicting server name "localhost" on 0.0.0.0:8001, ignored` indica múltiplos server blocks com o mesmo `server_name`/porta. **Não impede funcionamento**, mas é recomendável ajustar para limpar o alerta.
 
-## Possíveis Causas (raiz do 302 e dos sintomas)
+- ℹ️ **Feature-Policy ausente:** O header `Feature-Policy` não apareceu. Esta diretiva foi **substituída por `Permissions-Policy`** nas versões modernas dos navegadores; a ausência não é problema.
 
-1. Sessão de UI ausente: o teste usa `Authorization: Bearer <token>` (válido para API), mas o endpoint `/superset/` trafega pela UI do Morpheus e requer sessão baseada em cookies (`JSESSIONID` e `XSRF-TOKEN`). Sem cookies, a UI redireciona para `/login/auth` (302).
-2. Verificação nos headers incorreta para este cenário: como a resposta veio da UI (login), a presença de `Content-Security-Policy` é da página do Morpheus e não mede o comportamento do proxy do Superset.
-3. Módulo headers-more não relacionado nesta resposta: a remoção/ajuste de CSP/CORS no proxy externo só se aplica quando a resposta vem do Superset via proxy. Como houve redirecionamento para a UI, essa etapa não foi exercitada.
-4. Warning de `server_name` duplicado: existe outro bloco NGINX escutando `:8001` com `server_name localhost`. É apenas alerta, mas convém ajustar para evitar ambiguidades futuras.
-5. Ordem/carregamento de `location` no NGINX embutido: pouco provável pelo log atual, mas se o `/superset/` não estiver sendo tratado pelo arquivo certo, a UI pode aplicar regras próprias antes do proxy. Vale confirmar inclusão e precedência.
-6. SNI/destino externo: já configurado (`proxy_ssl_server_name on` no proxy externo). Não aparenta ser a causa do 302.
+### 💡 Resumo
 
-## Ações Recomendadas (próximos passos)
+O **302 de login** mostra que o teste exercitou a camada de UI do Morpheus (que exige sessão), e não chegou a validar o caminho proxied até o Superset. **O proxy pode estar correto**, mas o teste precisa simular uma sessão autenticada (cookies) ou validar diretamente o proxy externo (porta 8001).
 
-Valide o proxy de forma incremental para isolar a causa:
+## 🔎 Possíveis Causas (raiz do 302 e dos sintomas)
 
-1. Validar diretamente o Proxy Externo (bypassa o Morpheus)
+1. 🔐 **Sessão de UI ausente:** O teste usa `Authorization: Bearer <token>` (válido para **API**), mas o endpoint `/superset/` trafega pela **UI do Morpheus** e requer sessão baseada em **cookies** (`JSESSIONID` e `XSRF-TOKEN`). Sem cookies, a UI redireciona para `/login/auth` (302).
 
-- Objetivo: comprovar que `https://localhost:8001/superset/` retorna conteúdo do Superset com headers ajustados.
-- Exemplo:
+2. 🏷️ **Verificação nos headers incorreta:** Como a resposta veio da UI (login), a presença de `Content-Security-Policy` é da página do Morpheus e **não mede** o comportamento do proxy do Superset.
+
+3. 🔧 **Módulo headers-more não exercitado:** A remoção/ajuste de CSP/CORS no proxy externo só se aplica quando a resposta vem do Superset via proxy. Como houve redirecionamento para a UI, essa etapa **não foi testada**.
+
+4. ⚠️ **Warning de `server_name` duplicado:** Existe outro bloco NGINX escutando `:8001` com `server_name localhost`. É apenas alerta, mas convém ajustar para evitar ambiguidades futuras.
+
+5. 📂 **Ordem/carregamento de `location` no NGINX embutido:** Pouco provável pelo log atual, mas se o `/superset/` não estiver sendo tratado pelo arquivo certo, a UI pode aplicar regras próprias antes do proxy. Vale confirmar inclusão e precedência.
+
+6. 🔒 **SNI/destino externo:** Já configurado (`proxy_ssl_server_name on` no proxy externo). **Não aparenta** ser a causa do 302.
+
+## ✅ Ações Recomendadas (próximos passos)
+
+**Estratégia:** Valide o proxy de forma incremental para isolar a causa.
+
+### 1. 🎯 Validar diretamente o Proxy Externo (bypassa o Morpheus)
+
+- **Objetivo:** Comprovar que `https://localhost:8001/superset/` retorna conteúdo do Superset com headers ajustados.
+- **Exemplo:**
 
     ```bash
     curl -kI https://localhost:8001/superset/
     curl -k https://localhost:8001/superset/ | head -50
     ```
 
-- Resultado esperado: status 200/3xx do Superset e ausência dos CSP restritivos (de acordo com as diretivas `more_clear_headers` e `more_set_headers`).
+- **Resultado esperado:** Status `200`/`3xx` do Superset e **ausência dos CSP restritivos** (de acordo com as diretivas `more_clear_headers` e `more_set_headers`).
 
-1. Simular sessão de UI do Morpheus no teste automatizado
+### 2. 🍪 Simular sessão de UI do Morpheus no teste automatizado
 
-- Objetivo: acessar `https://<morpheus>/superset/` já autenticado na UI.
-- Abordagem:
+- **Objetivo:** Acessar `https://<morpheus>/superset/` já autenticado na UI.
+- **Abordagem:**
   - Realizar login na UI para obter cookies (ex.: fluxo de login que popula `JSESSIONID`/`XSRF-TOKEN`) e armazenar com `curl -c cookiejar.txt -b cookiejar.txt`.
-  - Reutilizar o cookiejar ao chamar `PROXY_TEST_URL`: 
+  - Reutilizar o cookiejar ao chamar `PROXY_TEST_URL`:
 
-        ```bash
-        curl -k -i -c cookiejar.txt -b cookiejar.txt "https://<morpheus>/superset/"
-        ```
+```bash
+curl -k -i -c cookiejar.txt -b cookiejar.txt "https://<morpheus>/superset/"
+```
 
-- Observação: o token de API (Bearer) não substitui a sessão de UI para rotas da interface.
+- ⚠️ **Observação:** O token de API (Bearer) **não substitui** a sessão de UI para rotas da interface.
 
-1. Higienizar o warning de server_name duplicado
+### 3. 🔧 Higienizar o warning de server_name duplicado
 
-- Editar o `server_name` do proxy externo para algo único (ex.: `server_name superset-proxy.local;`) ou remover o `server_name` se não for necessário. Alternativamente, marcar `listen 8001 ssl default_server;` caso apropriado.
+Editar o `server_name` do proxy externo para algo único (ex.: `server_name superset-proxy.local;`) ou remover o `server_name` se não for necessário. Alternativamente, marcar `listen 8001 ssl default_server;` caso apropriado.
 
-1. (Opcional) Conferir módulo headers-more
+### 4. 📦 (Opcional) Conferir módulo headers-more
 
-- Garantir que `libnginx-mod-http-headers-more-filter` esteja instalado no NGINX externo para que `more_clear_headers`/`more_set_headers` sejam efetivos.
+Garantir que `libnginx-mod-http-headers-more-filter` esteja instalado no NGINX externo para que `more_clear_headers`/`more_set_headers` sejam efetivos.
 
-1. (Opcional) Confirmar precedência do `location /superset/` no Morpheus
+### 5. 📋 (Opcional) Confirmar precedência do `location /superset/` no Morpheus
 
-- Verificar se o arquivo `morpheus.conf` com o `location /superset/` está realmente incluído e ativo no NGINX embutido (ordem das includes, nenhum outro `location` mais específico colidindo).
+Verificar se o arquivo `morpheus.conf` com o `location /superset/` está realmente incluído e ativo no NGINX embutido (ordem das includes, nenhum outro `location` mais específico colidindo).
 
-## Conclusão
+## 🎯 Conclusão
 
-O comportamento observado (302 para `/login/auth` e presença de CSP) aponta para falta de sessão de UI durante o teste – não para falha do proxy. Após validar o proxy externo diretamente e/ou ajustar o teste para usar cookies de sessão, a tendência é que o conteúdo do Superset seja servido corretamente em `/superset/` dentro do Morpheus.
+O comportamento observado (**302 para `/login/auth`** e presença de CSP) aponta para **falta de sessão de UI** durante o teste – **não para falha do proxy**. 
+
+✅ **Próximo passo crítico:** Após validar o proxy externo diretamente e/ou ajustar o teste para usar cookies de sessão, a tendência é que o conteúdo do Superset seja servido corretamente em `/superset/` dentro do Morpheus.
 
