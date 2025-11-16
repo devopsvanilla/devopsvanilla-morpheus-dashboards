@@ -122,29 +122,15 @@ class HomeDashboardProvider extends AbstractDashboardProvider {
 	}
 
 	@Override
-	ContentSecurityPolicy getContentSecurityPolicy() {
-def csp = new ContentSecurityPolicy()
-		// Corrigir diretivas CSP para custom-widget React/iframe
-		// default-src: apenas recursos gerais (SEM domínios extras que causam fallback)
-		csp.defaultSrc = "'self' data: blob: ws: wss:"
-		
-		// frame-src: libere EXPLICITAMENTE os domínios de iframe
-		csp.frameSrc = "'self' https://superset-morpheus-container-poc.loonar.dev https://morpheus-container-poc.eastus.cloudapp.azure.com"
-		
-		// script-src: nonce substituirá 'unsafe-inline' no template (se usado)
-		csp.scriptSrc = "'self' https://reactjs.org *.jsdelivr.net"
-		
-		// style-src: use 'unsafe-inline' (ou {{nonce}} em templates handlebars)
-		// IMPORTANTE: Se usar nonce no template, o navegador ignora 'unsafe-inline' automaticamente
-		csp.styleSrc = "'self' 'unsafe-inline' https: *.bootstrapcdn.com"
-		
-		// img, fonts, connect
-		csp.imgSrc = "'self' *.wikimedia.org data:"
-		csp.fontSrc = "'self' https://r2cdn.perplexity.ai fonts.gstatic.com data:"
-		
-		// Políticas adicionais
-		csp.permissionsPolicy = "vibrate=(),notifications=(),push=()"
-		
-		return csp	}
-
+    ContentSecurityPolicy getContentSecurityPolicy() {
+        def csp = new ContentSecurityPolicy()
+        csp.defaultSrc = "'self' data: blob: ws: wss:"
+        csp.frameSrc = "'self' https://superset-morpheus-container-poc.loonar.dev https://morpheus-container-poc.eastus.cloudapp.azure.com"
+        csp.scriptSrc = "'self' https://reactjs.org *.jsdelivr.net"
+        csp.styleSrc = "'self' 'unsafe-inline' https: *.bootstrapcdn.com"
+        csp.imgSrc = "'self' *.wikimedia.org data:"
+        csp.fontSrc = "'self' https://r2cdn.perplexity.ai fonts.gstatic.com data:"
+        csp.permissionsPolicy = "vibrate=(),notifications=(),push=()"
+        csp
+    }
 }
