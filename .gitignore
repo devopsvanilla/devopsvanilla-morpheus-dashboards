@@ -13,3 +13,6 @@ lib/
 
 # Local environment (do not commit secrets)
 .env
+
+# Backup files from setup scripts
+setup/reverse-proxy/bkp/
