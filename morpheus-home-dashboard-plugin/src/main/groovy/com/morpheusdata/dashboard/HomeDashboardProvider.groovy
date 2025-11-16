@@ -129,7 +129,7 @@ def csp = new ContentSecurityPolicy()
 		csp.defaultSrc = "'self' data: blob: ws: wss:"
 		
 		// frame-src: libere EXPLICITAMENTE os domínios de iframe
-		csp.frameSrc = "'self' https://superset-morpheus-container-poc.loonar.dev http://morpheus-container-poc.eastus.cloudapp.azure.com"
+		csp.frameSrc = "'self' https://superset-morpheus-container-poc.loonar.dev https://morpheus-container-poc.eastus.cloudapp.azure.com"
 		
 		// script-src: nonce substituirá 'unsafe-inline' no template (se usado)
 		csp.scriptSrc = "'self' https://reactjs.org *.jsdelivr.net"
