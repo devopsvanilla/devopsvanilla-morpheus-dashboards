@@ -10,3 +10,6 @@ bin/
 .DS_Store
 disabled/
 lib/
+
+# Local environment (do not commit secrets)
+.env

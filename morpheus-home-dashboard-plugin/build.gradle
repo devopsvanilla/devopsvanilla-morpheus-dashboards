@@ -71,7 +71,7 @@ jar {
 	manifest {
 		attributes(
 			'Plugin-Class': 'com.morpheusdata.dashboard.MorpheusHomeDashboardPlugin',
-			'Plugin-Version': version,
+			'Plugin-Version': project.version,
 			'Morpheus-Name': 'Morpheus Standard Dashboard',
 			'Morpheus-Organization': 'morpheus',
 			'Morpheus-Code': 'morpheus-home-dashboard-plugin',
@@ -98,7 +98,7 @@ task copyRuntimeLibs(type: Copy) {
 
 
 task(console, dependsOn: 'classes', type: JavaExec) {
-	main = 'groovy.ui.Console'
+	mainClass.set('groovy.ui.Console')
 	classpath = sourceSets.main.runtimeClasspath
 }
 

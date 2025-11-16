@@ -47,7 +47,8 @@
         "yzhang.markdown-all-in-one",
         "bierner.markdown-mermaid",
         "piotrpalarz.vscode-gitignore-generator",
-        "maciejdems.add-to-gitignore"
+        "maciejdems.add-to-gitignore",
+        "redhat.fabric8-analytics"
       ],
       "settings": {
         // Java Settings

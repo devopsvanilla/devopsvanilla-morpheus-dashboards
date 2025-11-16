@@ -44,7 +44,7 @@ graph TB
     
     subgraph Tech["Technology Stack"]
         Groovy["Groovy 3.0.7"]
-        Gradle["Gradle 7.3+"]
+        Gradle["Gradle 7.3+ (Gradle 8 ready)"]
         Java["Java 17+"]
         PluginCore["Morpheus Plugin Core 1.2.7"]
     end
@@ -83,7 +83,7 @@ devopsvanilla-morpheus-dashboards/
 ### Prerequisites
 
 - Java 17 or higher
-- Gradle 7.3+
+- Gradle 7.3+ (project is compatible with Gradle 8)
 - MorpheusData Appliance v8.0 or later
 - Git
 
@@ -94,22 +94,28 @@ devopsvanilla-morpheus-dashboards/
 To build all plugins in the repository:
 
 ```bash
-./gradlew shadowJarCopy
+./gradlew shadowJar
 ```
 
-This creates compiled JAR files in the `build/lib` folder.
+This creates compiled JAR files in the `plugins/` folder.
 
 #### Build Individual Plugins
 
-To build a specific plugin (e.g., `morpheus-home-dashboard`):
+To build a specific plugin (e.g., `morpheus-home-dashboard-plugin`):
 
 ```bash
-./gradlew morpheus-home-dashboard-plugin:shadowJarCopy
+./gradlew morpheus-home-dashboard-plugin:shadowJar
 ```
 
 #### Output
 
-After building, a JAR file will be produced in the `build/lib` folder that can be uploaded into your Morpheus environment.
+After building, a JAR file will be produced in the top-level `plugins/` folder that can be uploaded into your Morpheus environment.
+
+> Tip: To inspect Gradle deprecation warnings (useful when upgrading Gradle), you can run with:
+
+```bash
+./gradlew morpheus-home-dashboard-plugin:shadowJar --warning-mode all
+```
 
 ---
 
@@ -142,6 +148,7 @@ After building, a JAR file will be produced in the `build/lib` folder that can b
 The primary plugin in this repository provides enhanced customization capabilities for the Morpheus home dashboard.
 
 **Features**:
+
 - Custom widget support
 - Real-time data refresh
 - Configurable layout and appearance
@@ -165,9 +172,9 @@ This project includes DevContainer support for consistent development environmen
 ### Project Dependencies
 
 - **morpheus-plugin-core**: Core Morpheus plugin SDK
-  - Reference: https://developer.morpheusdata.com
-  - Documentation: https://developer.morpheusdata.com/docs
-  - API Reference: https://apidocs.morpheusdata.com
+    - Reference: <https://developer.morpheusdata.com>
+    - Documentation: <https://developer.morpheusdata.com/docs>
+    - API Reference: <https://apidocs.morpheusdata.com>
 
 ### Code Style
 
