@@ -48,7 +48,8 @@
         "bierner.markdown-mermaid",
         "piotrpalarz.vscode-gitignore-generator",
         "maciejdems.add-to-gitignore",
-        "redhat.fabric8-analytics"
+        "redhat.fabric8-analytics",
+        "spmeesseman.vscode-taskexplorer"
       ],
       "settings": {
         // Java Settings
@@ -100,6 +101,10 @@
   "postCreateCommand": "bash -c 'sudo chown -R vscode:vscode /home/vscode/.gradle /home/vscode/.m2 && chmod +x gradlew && ./gradlew --version && git config --global --add safe.directory ${containerWorkspaceFolder}'",
   "postStartCommand": "bash -c '[ -f /tmp/.host-gitconfig ] && cp /tmp/.host-gitconfig ~/.gitconfig || true'",
   "remoteUser": "vscode",
+  "remoteEnv": {
+    "JAVA_HOME": "/usr/local/sdkman/candidates/java/17.0.17-ms",
+    "PATH": "${containerEnv:JAVA_HOME}/bin:${containerEnv:PATH}"
+  },
   "mounts": [
     // Named volumes for build caches - best performance and reliability
     "source=vscode-gradle,target=/home/vscode/.gradle,type=volume",
